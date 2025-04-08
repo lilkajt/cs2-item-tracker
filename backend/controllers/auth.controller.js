@@ -8,18 +8,19 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passRegex = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 
 export const signup = async (req, res, next) => {
-    const {username, email, password} = req.body;
+    const {username, email, password, confirmPass} = req.body;
     const trimUsername = username == undefined? '' : username.trim();
     const trimEmail = email == undefined? '' : email.trim();
     const trimPassword = password == undefined? '' : password.trim();
+    const trimConfirmPass = confirmPass == undefined? '' : confirmPass.trim();
 
-    if ( trimUsername === '' || trimEmail === '' || trimPassword === ''){
+    if ( trimUsername === '' || trimEmail === '' || trimPassword === '' || trimConfirmPass === ''){
         return next(errorHandler(400, "Please enter a username, email, and password to continue."));
     }
+    if (trimPassword != trimConfirmPass) return next(errorHandler(400,"Please make sure both password are the same"));
     if (!nameRegex.test(trimUsername)) return next(errorHandler(400, "Please use at least 6 letters for your username — no numbers or symbols"));
     if (!emailRegex.test(trimEmail)) return next(errorHandler(400, "Oops! That doesn't look like a valid email. Try something like name@example.com"));
     if (!passRegex.test(trimPassword)) return next(errorHandler(400,"Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character."));
-    // 409 - already taken
     if (await User.findOne({
         $or: [
             {username: trimUsername},
@@ -71,7 +72,8 @@ export const logout = async (req, res, next) => {
     try {
         res.clearCookie("access_token");
         res
-        .status(204);
+        .status(204)
+        .json({message: ""});
     } catch (error) {
         next(error);
     }

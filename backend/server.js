@@ -3,12 +3,13 @@ import cors from 'cors';
 import { connectDB } from './config/db.js';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
-
+import UserRouter from './routes/user.route.js';
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api/user', authRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/user', UserRouter);
 app.use( (err,req, res, next) => {
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';
@@ -19,7 +20,7 @@ app.use( (err,req, res, next) => {
     });
 });
 
-app.listen(5000, () => {
+app.listen(5010, () => {
     connectDB();
-    console.log('Server running on http://localhost:5000');
+    console.log('Server running on http://localhost:5010');
 });
