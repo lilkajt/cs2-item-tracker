@@ -15,7 +15,7 @@ const ItemSchema = new mongoose.Schema({
     },
     soldPrice: {
         type: Number,
-        default: 0,
+        default: null,
     },
     soldDate: {
         type: Number,
