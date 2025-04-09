@@ -37,8 +37,27 @@ export const createItem = async (req, res, next) => {
     await item.save();
     res
     .status(201)
-    .json(item);
+    .json({success: true, item});
     } catch (error) {
         next(error);
     }
-}
+};
+
+export const deleteItem = async (req, res, next) => {
+    const itemId = req.params.id;
+    if (!itemId) return next(errorHandler(400,"Oops! We couldn't process your request. Item ID is missing."));
+    try {
+        const item = await Item.findById(itemId);
+        if (!item) return next(errorHandler(404, "We couldn't find the item you're trying to delete. It may have already been removed."));
+        if (item.userId !== req.user.id) {
+            return next(errorHandler(403, "Hold on! You can only delete items that belong to you."));
+        }
+        await item.deleteOne();
+        res.status(200).json({ 
+            success: true,
+            message: "The item was deleted successfully." 
+        });
+    } catch (error) {
+        next(error);
+    }
+};
