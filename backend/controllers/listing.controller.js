@@ -1,5 +1,6 @@
 import Item from '../models/item.model.js';
 import { errorHandler } from '../utils/error.js';
+import mongoose from 'mongoose';
 
 const itemRegex = /^[a-zA-Z0-9! |★壱]+$/
 const priceRegex = /^-?\d+(\.\d{1,2})?$/
@@ -28,6 +29,7 @@ export const createItem = async (req, res, next) => {
     }
     try {
     const item = new Item({
+        userId: req.user.id,
         itemName: trimItem,
         buyPrice: priceBuy,
         buyDate: dateBuy,
@@ -46,10 +48,13 @@ export const createItem = async (req, res, next) => {
 export const deleteItem = async (req, res, next) => {
     const itemId = req.params.id;
     if (!itemId) return next(errorHandler(400,"Oops! We couldn't process your request. Item ID is missing."));
+    if (!mongoose.Types.ObjectId.isValid(itemId)) {
+        return next(errorHandler(400, "That doesn't look like a valid item ID. Please double-check and try again."));
+    }
     try {
         const item = await Item.findById(itemId);
         if (!item) return next(errorHandler(404, "We couldn't find the item you're trying to delete. It may have already been removed."));
-        if (item.userId !== req.user.id) {
+        if (item.userId.toString() !== req.user.id) {
             return next(errorHandler(403, "Hold on! You can only delete items that belong to you."));
         }
         await item.deleteOne();

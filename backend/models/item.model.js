@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const ItemSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     itemName: {
         type: String,
         required: true,
