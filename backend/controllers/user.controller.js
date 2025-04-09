@@ -26,9 +26,8 @@ export const updateUser = async (req, res, next) => {
             const newHashedPassword = bcrypt.hashSync(trimNewPassword,14);
             user.password = newHashedPassword;
             await user.save();
-            res.status(200).json({ message: "Password updated successfully." });
+            res.status(200).json({ success: true, message: "Password updated successfully." });
         }
-
     } catch (error) {
         next(error);
     }

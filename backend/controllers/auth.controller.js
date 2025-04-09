@@ -34,7 +34,7 @@ export const signup = async (req, res, next) => {
         const hashedPassword = bcrypt.hashSync(trimPassword, 14);
         const newUser = new User({username: trimUsername, email: trimEmail, password: hashedPassword});
         await newUser.save();
-        res.status(201).json({message: "User created successfully!"});
+        res.status(201).json({success: true, message: "User created successfully!"});
     } catch (error) {
         next(error);
     }
@@ -73,7 +73,7 @@ export const logout = async (req, res, next) => {
         res.clearCookie("access_token");
         res
         .status(204)
-        .json({message: ""});
+        .json({success: true, message: ""});
     } catch (error) {
         next(error);
     }
