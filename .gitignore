@@ -5,6 +5,7 @@
 
 # User-specific files
 .env
+.DS_Store
 *.rsuser
 *.suo
 *.user
