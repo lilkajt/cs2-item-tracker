@@ -7,6 +7,17 @@ const nameRegex = /^[a-zA-Z]{6,}$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passRegex = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 
+const validateLoginCredential = (loginInput) => {
+    if (!loginInput) return false;
+
+    if (loginInput.includes('@')){
+        return emailRegex.test(loginInput);
+    }
+    else {
+        return nameRegex.test(loginInput);
+    }
+};
+
 export const signup = async (req, res, next) => {
     const {username, email, password, confirmPass} = req.body;
     const trimUsername = username == undefined? '' : username.trim();
@@ -47,14 +58,18 @@ export const signin = async (req, res, next) => {
     if (trimLogin === '' || trimPassword === ''){
         return next(errorHandler(400, "Both email/username and password are required. Please fill in both fields."));
     }
-    const user = await User.findOne({
-        $or: [
-            {username: trimLogin},
-            {email: trimLogin}
-        ]
-    });
-    if (!user) return next(errorHandler(404,"Oops! We couldn't find an account with that email/username. Please check again or sign up to create a new account."));
+    if (!passRegex.test(trimPassword)) return next(errorHandler(400,"Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character."));
+    if (!validateLoginCredential(trimLogin)){
+        return next(errorHandler(400, "Oops! That doesn’t look like a valid username or email."));
+    }
     try {
+        let user;
+        if (trimLogin.includes('@')){
+            user = await User.findOne({email: trimLogin});
+        } else{
+            user = await User.findOne({username: trimLogin});
+        }
+        if (!user) return next(errorHandler(404,"Oops! We couldn't find an account with that email/username. Please check again or sign up to create a new account."));
         const isMatch = bcrypt.compareSync(trimPassword, user.password);
         if (!isMatch) return next(errorHandler(401, "Incorrect email/username or password. Please try again or reset your password if you've forgotten it."));
         const {password: p, ...rest} = user._doc;
