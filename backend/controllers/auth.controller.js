@@ -3,7 +3,7 @@ import User from '../models/user.model.js';
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
 
-const nameRegex = /^[a-zA-Z]{6,}$/
+const nameRegex = /^[a-zA-Z][a-zA-Z0-9]{5,}$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passRegex = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 
@@ -29,19 +29,18 @@ export const signup = async (req, res, next) => {
         return next(errorHandler(400, "Please enter a username, email, and password to continue."));
     }
     if (trimPassword != trimConfirmPass) return next(errorHandler(400,"Please make sure both password are the same"));
-    if (!nameRegex.test(trimUsername)) return next(errorHandler(400, "Please use at least 6 letters for your username — no numbers or symbols"));
+    if (!nameRegex.test(trimUsername)) return next(errorHandler(400, "Please choose a username that starts with a letter and has at least 6 characters. No special symbols allowed."));
     if (!emailRegex.test(trimEmail)) return next(errorHandler(400, "Oops! That doesn't look like a valid email. Try something like name@example.com"));
     if (!passRegex.test(trimPassword)) return next(errorHandler(400,"Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character."));
-    if (await User.findOne({
-        $or: [
-            {username: trimUsername},
-            {email: trimEmail}
-        ]
-    }) != null) {
-        return next(errorHandler(409,"This email or username is already in use. Please choose another one."));
-    }
-
     try {
+        if (await User.findOne({
+            $or: [
+                {username: trimUsername},
+                {email: trimEmail}
+            ]
+        }) != null) {
+            return next(errorHandler(409,"This email or username is already in use. Please choose another one."));
+        }
         const hashedPassword = bcrypt.hashSync(trimPassword, 14);
         const newUser = new User({username: trimUsername, email: trimEmail, password: hashedPassword});
         await newUser.save();
