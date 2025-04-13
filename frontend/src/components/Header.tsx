@@ -9,7 +9,7 @@ function Header() {
     // if click sign in display only logo no button on login/signup page
   return (
     <>
-    <div className='bg-midnight w-full h-32'>
+    <div className='w-full h-32'>
         <div className='w-full py-8 px-8 inline-flex flex-row items-center justify-between'>
             <div className="w-auto h-6 text-center justify-center text-beige-100 text-3xl font-bold font-display2 cursor-pointer">FinTrack</div>
             { loggedIn && OnSignInPage ? (
@@ -22,7 +22,7 @@ function Header() {
                     </div>
                 </>
             ) : (
-                <Button/>
+                <Button color='green'>Sign In</Button>
             )}
         </div>
     </div>
