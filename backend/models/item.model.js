@@ -26,6 +26,14 @@ const ItemSchema = new mongoose.Schema({
         type: Number,
         default: null,
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Number,
+        default: null
+    }
 }, {timestamps: true});
 const Item = mongoose.model("Item", ItemSchema);
 export default Item;
