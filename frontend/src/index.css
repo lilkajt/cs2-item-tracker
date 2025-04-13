@@ -1,5 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+body{
+  margin: 0;
+  background-color: var(--color-midnight);
+  font-family: var(--font-display);
+}
 
 @custom-variant dark (&:is(.dark *));
 :root {
@@ -122,4 +127,68 @@
 
   }
 
+}
+
+@font-face {
+  font-family: 'Grifter';
+  src: url('fonts/grifterbold.otf') format('otf');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('fonts/Satoshi-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('fonts/Satoshi-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('fonts/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('fonts/Satoshi-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@theme {
+  --color-midnight: #253140;  /* here use bg-midnight, text-midnight, */
+  --color-green-100: #62C7AB;
+  --color-green-200: #419E83;
+  --color-green-300: #03A678;
+  --color-green-400: #217E63;
+  --color-green-500: #027D5A;
+  --color-beige-100: #D9C9C5;
+  --color-beige-200: #C3B7B4;
+  --color-red: #FB6961;
+  --color-white: #FFFFFF;
+  --color-orange-100: #FF8C00;
+  --color-orange-200: #BF7111;
+  --color-orange-300: #8F550D;
+  --color-blue: #24ACFF;
+  --font-display: "Satoshi", sans-serif; /* here use font-display*/
+  --font-display2: "Grifter";
+  --radius-5xl: 60px;  /* here use rounded-5xl*/
+  /* --spacing- */
+  /* --breakpoint-sm: 30rem; */
 }
