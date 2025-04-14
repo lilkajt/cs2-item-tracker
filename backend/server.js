@@ -19,6 +19,8 @@ app.use( (err,req, res, next) => {
         message = "Oops! Looks like we didn't get your input right. Please double-check and try again!";
     } else if (err.name === "ValidationError") {
         message = "Hmm, we couldn't make sense of some of the data. Give it another go, making sure everything is in order!";
+    } else if (err.name === "SyntaxError"){
+        message = "A syntax error occurred. Please ensure the input follows the correct structure (e.g., valid JSON).";
     } else if (err.statusCode && err.statusCode < 500) {
         message = err.message;
     }
