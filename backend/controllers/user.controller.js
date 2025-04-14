@@ -16,7 +16,8 @@ export const updateUser = async (req, res, next) => {
         return next(errorHandler(400, "Please enter your current password, new password, and confirm your new password."));
     };
     if (!passRegex.test(trimCurPassword) || !passRegex.test(trimNewPassword) || !passRegex.test(trimConfNewPassword)) return next(errorHandler(400,"Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character."));
-    if (trimNewPassword !== trimConfNewPassword) return next(errorHandler(400,"Please make sure both password are the same"));
+    if (trimNewPassword !== trimConfNewPassword) return next(errorHandler(400,"Please make sure both new passwords are the same"));
+    if (trimCurPassword === trimNewPassword) return next(errorHandler(400,"Your new password must be different from the current one."));
     try {
         const user = await User.findById(req.params.id);
         const isMatch = bcrypt.compareSync(trimCurPassword, user.password);
