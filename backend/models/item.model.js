@@ -33,6 +33,10 @@ const ItemSchema = new mongoose.Schema({
     deletedAt: {
         type: Number,
         default: null
+    },
+    imageUrl: {
+        type: String,
+        default: ""
     }
 }, {timestamps: true});
 const Item = mongoose.model("Item", ItemSchema);

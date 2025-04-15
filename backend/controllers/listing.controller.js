@@ -4,14 +4,17 @@ import mongoose from 'mongoose';
 
 const itemRegex = /^[a-zA-Z0-9! |★壱]+$/
 const priceRegex = /^-?\d+(\.\d{1,2})?$/
+const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
 
 export const createItem = async (req, res, next) => {
-    const {item, buyPrice, buyDate, soldDate, soldPrice} = req.body;
+    const {item, buyPrice, buyDate, soldDate, soldPrice, imageUrl} = req.body;
     const trimItem = item == undefined? '': item.trim();
+    const trimImageUrl = imageUrl == undefined? '': imageUrl.trim();
     let finalSoldDate = soldDate || null;
     let finalSoldPrice = soldPrice || null;
     if (!itemRegex.test(trimItem)) return next(errorHandler(400,"Item name can only include letters, numbers, !, |, ★, 壱, and spaces. Please try again."));
     if (!priceRegex.test(buyPrice) || !priceRegex.test(buyDate)) return next(errorHandler(400,"Buy price and date must be valid numbers. Prices can have up to two decimal places."));
+    if (!itemUrlRegex.test(trimImageUrl)) return next(errorHandler(400, "Item image url must be valid syntax."));
     if (finalSoldDate && !priceRegex.test(finalSoldDate)) {
         return next(errorHandler(400, "The sold date must be a valid numeric timestamp."));
     }
@@ -34,7 +37,8 @@ export const createItem = async (req, res, next) => {
         buyPrice: buyPrice,
         buyDate: buyDate,
         soldDate: finalSoldDate,
-        soldPrice: finalSoldPrice
+        soldPrice: finalSoldPrice,
+        imageUrl: trimImageUrl
     });
     await item.save();
     const {userId, isDeleted, deletedAt, ...rest} = item._doc;
@@ -114,7 +118,7 @@ export const updateItem = async (req, res, next) => {
             return next(errorHandler(403, "Hold on! You can only update items that belong to you."));
         }
         const updateData = {};
-        const { itemName, buyPrice, buyDate, soldDate, soldPrice} = req.body;
+        const { itemName, buyPrice, buyDate, soldDate, soldPrice, imageUrl} = req.body;
 
         if (itemName !== undefined) {
             const trimItem = itemName.trim();
@@ -122,6 +126,13 @@ export const updateItem = async (req, res, next) => {
                 return next(errorHandler(400, "Item name must only include allowed characters (letters, numbers, !, |, etc)."));
             }
             updateData.itemName = trimItem;
+        }
+        if ( imageUrl !== undefined) {
+            const trimImage = imageUrl.trim();
+            if (!itemUrlRegex.test(trimImage)) {
+                return next(errorHandler(400, "Item image url must be valid syntax."));
+            }
+            updateData.imageUrl = trimImage;
         }
         
         if (buyPrice !== undefined) {
