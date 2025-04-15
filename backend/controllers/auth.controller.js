@@ -33,19 +33,14 @@ export const signup = async (req, res, next) => {
     if (!emailRegex.test(trimEmail)) return next(errorHandler(400, "Oops! That doesn't look like a valid email. Try something like name@example.com"));
     if (!passRegex.test(trimPassword)) return next(errorHandler(400,"Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character."));
     try {
-        if (await User.findOne({
-            $or: [
-                {username: trimUsername},
-                {email: trimEmail}
-            ]
-        }) != null) {
-            return next(errorHandler(409,"This email or username is already in use. Please choose another one."));
-        }
-        const hashedPassword = bcrypt.hashSync(trimPassword, 14);
+        const hashedPassword = bcrypt.hashSync(trimPassword);
         const newUser = new User({username: trimUsername, email: trimEmail, password: hashedPassword});
         await newUser.save();
         res.status(201).json({success: true, message: "User created successfully!"});
     } catch (error) {
+        if (error.code === 11000){
+            return next(errorHandler(409,"This email or username is already in use. Please choose another one."));
+        }
         next(error);
     }
 };
@@ -57,17 +52,16 @@ export const signin = async (req, res, next) => {
     if (trimLogin === '' || trimPassword === ''){
         return next(errorHandler(400, "Both email/username and password are required. Please fill in both fields."));
     }
-    if (!passRegex.test(trimPassword)) return next(errorHandler(400,"Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character."));
     if (!validateLoginCredential(trimLogin)){
         return next(errorHandler(400, "Oops! That doesn’t look like a valid username or email."));
     }
     try {
-        let user;
-        if (trimLogin.includes('@')){
-            user = await User.findOne({email: trimLogin});
-        } else{
-            user = await User.findOne({username: trimLogin});
-        }
+        const user = await User.findOne({
+            $or: [
+                {email: trimLogin},
+                {username: trimLogin}
+            ]
+        })
         if (!user) return next(errorHandler(404,"Oops! We couldn't find an account with that email/username. Please check again or sign up to create a new account."));
         const isMatch = bcrypt.compareSync(trimPassword, user.password);
         if (!isMatch) return next(errorHandler(401, "Incorrect email/username or password. Please try again or reset your password if you've forgotten it."));
@@ -75,7 +69,7 @@ export const signin = async (req, res, next) => {
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
         res
         .status(200)
-        .cookie("access_token", token, {httpOnly: true, expires: new Date(Date.now() + 3600000)})
+        .cookie("access_token", token, {httpOnly: true, secure: process.env.NODE_ENV === 'production' ,expires: new Date(Date.now() + 3600000)})
         .json(rest);
     } catch (error) {
         next(error);
