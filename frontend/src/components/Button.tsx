@@ -17,11 +17,16 @@ const button = tv({
 type ButtonProps = {
   color?: 'green' | 'orange';
   children: React.ReactNode;
+  onClick?: ()=> void;
 }
 
-const Button: React.FC<ButtonProps> = ({color, children}) => {
+const Button: React.FC<ButtonProps> = ({color, children, onClick}) => {
   return (
-    <div className={button({ color})} data-property-1={`${color} cta`}>
+    <div
+    className={button({ color})}
+    data-property-1={`${color} cta`}
+    onClick={onClick}
+    >
       {children}
     </div>
   );
