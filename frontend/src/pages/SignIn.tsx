@@ -117,9 +117,9 @@ function SignIn() {
       { authError && (
         <div className="w-72 text-red text-sm">{authError}</div>
       )}
-      <div className="w-72">
-        <div className="font-normal text-start tracking-wider text-beige-100 text-md">
-          Dont have an account?&nbsp;<Link to={'/sign-up'} className="text-blue">Sign up now</Link>
+      <div className="w-72 h-12 flex items-center">
+        <div className="font-normal text-start tracking-wide text-beige-100 text-md">
+          Dont have an account?&nbsp;<Link to={'/sign-up'} className="text-blue p-2.5">Sign up now</Link>
         </div>
       </div>
     </div>
