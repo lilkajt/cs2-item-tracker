@@ -1,11 +1,14 @@
-// here zustand security ?
-// get user state from zustand and return it
-// if not found navigate router dom to sign in page
+import { Navigate, Outlet } from 'react-router-dom'
+import useAuthStore from '../store/useAuthStore'
+
 function PrivateRoute() {
-  return "user redirect if not found";
+  const { isLoggedIn, loading } = useAuthStore()
+  
+  if (loading) {
+    return <div>Loading...</div>
+  }
+  
+  return isLoggedIn ? <Outlet /> : <Navigate to="/sign-in" />
 }
 
-
-// add zustand to validate user and header etc !important
-
-export default PrivateRoute
+export default PrivateRoute;
