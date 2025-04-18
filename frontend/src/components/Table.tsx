@@ -1,10 +1,12 @@
 import { FiImage } from "react-icons/fi";
 interface SaleItem {
-  id: string;
-  name: string;
-  date: string;
-  income: string;
-  imageUrl?: string;
+    _id: string
+    itemName: string
+    buyPrice: number
+    buyDate: number
+    soldPrice?: number
+    soldDate?: number
+    imageUrl?: string
 }
 
 interface TableProps {
@@ -41,7 +43,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                 
                 {items.map((item, index) => (
                     <div 
-                        key={item.id || index} 
+                        key={item._id || index} 
                         data-property-1="item" 
                         className={`w-full h-9 inline-flex justify-start items-center gap-2 ${
                             index > 0 ? 'mt-4 sm:mt-6' : ''
@@ -53,7 +55,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                                     <div className="w-5 h-5 sm:w-6 sm:h-6 relative overflow-hidden">
                                         <img 
                                             src={item.imageUrl} 
-                                            alt={item.name}
+                                            alt={item.itemName}
                                             className="w-4 h-4 sm:w-5 sm:h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain"
                                         />
                                     </div>
@@ -64,18 +66,18 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                                 )}
                             </div>
                             <div className="col-span-6 sm:col-span-7 py-[3px] overflow-hidden">
-                                <div className="text-beige-100 text-xs sm:text-sm font-bold leading-tight truncate text-center" title={item.name}>
-                                    {item.name}
+                                <div className="text-beige-100 text-xs sm:text-sm font-bold leading-tight truncate text-center" title={item.itemName}>
+                                    {item.itemName}
                                 </div>
                             </div>
                             <div className="col-span-3 sm:col-span-2 text-right">
                                 <div className="text-beige-100 text-xs sm:text-sm font-bold leading-tight text-center">
-                                    {item.date}
+                                    {item.soldDate ? (new Date(item.soldDate).toLocaleDateString()) : ('not sold yet')}
                                 </div>
                             </div>
                             <div className="col-span-2 text-right">
                                 <div className="text-beige-100 text-sm sm:text-lg font-bold font-display2 leading-tight tracking-tight text-center">
-                                    {item.income}c
+                                    { item.soldPrice? (item.buyPrice - item.soldPrice): ('')}c
                                 </div>
                             </div>
                         </div>
