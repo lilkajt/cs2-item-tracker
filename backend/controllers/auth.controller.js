@@ -25,7 +25,7 @@ export const signup = async (req, res, next) => {
     const trimPassword = password == undefined? '' : password.trim();
     const trimConfirmPass = confirmPass == undefined? '' : confirmPass.trim();
 
-    if ( trimUsername === '' || trimEmail === '' || trimPassword === '' || trimConfirmPass === ''){
+    if ( trimUsername === '' || trimEmail === '' || trimPassword === ''){
         return next(errorHandler(400, "Please enter a username, email, and password to continue."));
     }
     if (trimPassword != trimConfirmPass) return next(errorHandler(400,"Please make sure both password are the same"));
@@ -66,10 +66,11 @@ export const signin = async (req, res, next) => {
         const isMatch = bcrypt.compareSync(trimPassword, user.password);
         if (!isMatch) return next(errorHandler(401, "Incorrect email/username or password. Please try again or reset your password if you've forgotten it."));
         const {password: p, ...rest} = user._doc;
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "3h"});
         res
         .status(200)
-        .cookie("access_token", token, {httpOnly: true, secure: process.env.NODE_ENV === 'production' ,expires: new Date(Date.now() + 3600000)})
+        .cookie("access_token", token, {httpOnly: true, secure: process.env.NODE_ENV === 'production' ,expires: new Date(Date.now() + 10800000)})
+        // 3h valid
         .json(rest);
     } catch (error) {
         next(error);

@@ -10,7 +10,7 @@ export const updateUser = async (req, res, next) => {
     const trimCurPassword = curPassword == undefined? '' : curPassword.trim();
     const trimNewPassword = newPassword == undefined? '' : newPassword.trim();
     const trimConfNewPassword = confNewPassword == undefined? '' : confNewPassword.trim();
-    if ( trimCurPassword === '' || trimNewPassword === '' || trimConfNewPassword === ''){
+    if ( trimCurPassword === ''){
         return next(errorHandler(400, "Please enter your current password, new password, and confirm your new password."));
     };
     if (trimNewPassword !== trimConfNewPassword) return next(errorHandler(400,"Please make sure both new passwords are the same"));
