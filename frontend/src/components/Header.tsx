@@ -8,6 +8,7 @@ function Header() {
     const navigate = useNavigate();
     const location = useLocation();
     const isSignInPage = location.pathname === '/sign-in';
+    const isSignUpPage = location.pathname === '/sign-up';
     const handleSignIn = () => {
         navigate('/sign-in');
     };
@@ -32,7 +33,7 @@ function Header() {
                     </Link>
                 </>
             )}
-            { !isLoggedIn && !isSignInPage && (
+            { !isLoggedIn && !isSignInPage && !isSignUpPage && (
                 <Button onClick={handleSignIn} color='green'>Sign In</Button>
             )}
         </div>
