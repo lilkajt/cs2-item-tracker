@@ -8,8 +8,23 @@ import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import AuthGuard from './components/ProtectedRoute';
+import useAuthStore from './store/useAuthStore';
+import { useEffect } from 'react';
 
 function App() {
+  const {checkAuth} = useAuthStore();
+
+  useEffect(()=>{
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'auth-storage' || e.key === null){
+        checkAuth();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [checkAuth]);
+
   return (
     <>
       <BrowserRouter>
