@@ -18,34 +18,34 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
   return (
     <div data-property-1="sales" className="w-full max-w-[535px] bg-green-500 rounded-xl outline-2 outline-green-300 flex flex-col justify-start items-start overflow-hidden">
         <div className="self-stretch px-4 sm:px-6 pt-4 sm:pt-6 pb-2 sm:pb-4 flex flex-col justify-center items-start">
-            <div className="inline-flex justify-center items-center">
-                <div className="justify-start text-midnight text-base sm:text-lg font-bold leading-normal">{title}</div>
+            <div className="flex justify-center items-center">
+                <div className="text-midnight text-base sm:text-lg font-bold leading-normal">{title}</div>
             </div>
         </div>
         <div className="self-stretch w-full px-4 sm:px-6 pb-4 sm:pb-6 flex-1 overflow-y-auto">
             <div className="flex-1 self-stretch flex flex-col justify-start items-start w-full">
-                <div data-property-1="categories" className="w-full relative overflow-hidden py-1 mb-2">
+                <div data-property-1="categories" className="w-full relative overflow-hidden py-1 mb-2 text-midnight text-center leading-tight text-xs sm:text-sm font-bold">
                     <div className="grid grid-cols-12 w-full gap-2">
                         <div className="col-span-1">
-                            <div className="text-center text-midnight text-xs sm:text-sm font-bold leading-tight">Image</div>
+                            Image
                         </div>
                         <div className="col-span-6 sm:col-span-7">
-                            <div className="text-center text-midnight text-xs sm:text-sm font-bold leading-tight">Item</div>
+                            Item
                         </div>
-                        <div className="col-span-3 sm:col-span-2 text-right">
-                            <div className="text-center text-midnight text-xs sm:text-sm font-bold leading-tight">Date</div>
+                        <div className="col-span-3 sm:col-span-2">
+                            Date
                         </div>
-                        <div className="col-span-2 text-right">
-                            <div className="text-center text-midnight text-xs sm:text-sm font-bold leading-tight ">Income</div>
+                        <div className="col-span-2">
+                            Income
                         </div>
                     </div>
                 </div>
                 
-                {items.map((item, index) => (
+                { items.length > 0 && items.map((item, index) => (
                     <div 
                         key={item._id || index} 
                         data-property-1="item" 
-                        className={`w-full h-9 inline-flex justify-start items-center gap-2 ${
+                        className={`w-full h-9 inline-flex justify-start items-center ${
                             index > 0 ? 'mt-4 sm:mt-6' : ''
                         }`}
                     >
@@ -56,7 +56,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                                         <img 
                                             src={item.imageUrl} 
                                             alt={item.itemName}
-                                            className="w-4 h-4 sm:w-5 sm:h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain"
+                                            className="w-5 h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain"
                                         />
                                     </div>
                                 ) : (
@@ -65,19 +65,19 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                                     </div>
                                 )}
                             </div>
-                            <div className="col-span-6 sm:col-span-7 py-[3px] overflow-hidden">
-                                <div className="text-beige-100 text-xs sm:text-sm font-bold leading-tight truncate text-center" title={item.itemName}>
+                            <div className="col-span-6 sm:col-span-7 overflow-hidden">
+                                <div className="text-beige-100 text-sm font-medium leading-tight truncate text-center" title={item.itemName}>
                                     {item.itemName}
                                 </div>
                             </div>
                             <div className="col-span-3 sm:col-span-2 text-right">
-                                <div className="text-beige-100 text-xs sm:text-sm font-bold leading-tight text-center">
-                                    {item.soldDate ? (new Date(item.soldDate).toLocaleDateString()) : ('not sold yet')}
+                                <div className="text-beige-100 text-xs sm:text-sm font-medium leading-tight text-center">
+                                    {item.soldDate ? (new Date(item.soldDate * 1000).toLocaleDateString()) : ('not sold yet')}
                                 </div>
                             </div>
                             <div className="col-span-2 text-right">
-                                <div className="text-beige-100 text-sm sm:text-lg font-bold font-display2 leading-tight tracking-tight text-center">
-                                    { item.soldPrice? (item.buyPrice - item.soldPrice): ('')}c
+                                <div className="text-beige-100 text-lg font-bold font-display2 leading-tight tracking-tight text-center">
+                                    { item.soldPrice? (item.soldPrice - item.buyPrice): (0 - item.buyPrice)}c
                                 </div>
                             </div>
                         </div>
@@ -85,7 +85,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                 ))}
                 
                 {items.length === 0 && (
-                    <div className="w-full py-8 text-center text-beige-100 text-sm font-bold">
+                    <div className="w-full py-4 text-center text-beige-100 text-2xl font-medium">
                         No recent sales
                     </div>
                 )}

@@ -3,7 +3,7 @@ import { FiDollarSign, FiCreditCard, FiMonitor, FiBarChart2 } from "react-icons/
 import { tv } from 'tailwind-variants';
 
 const card = tv({
-  base: "w-72 bg-green-500 rounded-xl outline-2 outline-green-300 inline-flex flex-col items-center",
+  base: "w-72 bg-green-500 rounded-xl outline-2 outline-green-300 flex flex-col items-center",
 })
 
 type IconType = 'dollar' | 'card' | 'monitor' | 'chart';
@@ -36,8 +36,8 @@ const Card: React.FC<CardProps> = ({ icon, title, amount, subtitle }) => {
         <div className="self-stretch px-6 pt-6 pb-2 inline-flex justify-between items-center text-midnight">
             <div className="w-64 flex justify-between items-center">
                 <div className="text-base font-bold leading-tight">{title}</div>
-                <div data-property-1={`${icon}`} className="relative">
-                    {renderIcon()}
+                <div data-property-1={`${icon}`} >
+                  {renderIcon()}
                 </div>
             </div>
         </div>
