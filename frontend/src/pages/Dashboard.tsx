@@ -87,7 +87,7 @@ function Dashboard() {
   //   }
   // }
   // console.log(items.length > 1&& items[0]._id);
-  // console.log(pagination.currentPage);
+  // console.log(pagination);
   // console.log(error);
 
   const handleOpenModal = () => {
@@ -128,9 +128,9 @@ function Dashboard() {
           ></Card>
         </div>
       )}
-      { true && (
+      { false && (
         <div className='w-full flex flex-col gap-5 items-center'>
-          {/* <BarChart data={monthlyData}></BarChart> */}
+          <BarChart data={monthlyData}></BarChart>
           <Table items={soldItems}></Table>
         </div>
       )}
