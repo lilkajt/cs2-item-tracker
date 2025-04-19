@@ -2,7 +2,7 @@ import Item from '../models/item.model.js';
 import { errorHandler } from '../utils/error.js';
 import mongoose from 'mongoose';
 
-const itemRegex = /^[a-zA-Z0-9! |★壱]+$/
+const itemRegex = /^[a-zA-Z0-9! |★壱()-™]+$/
 const priceRegex = /^-?\d+(\.\d{1,2})?$/
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
 
@@ -46,8 +46,10 @@ export const createItem = async (req, res, next) => {
     if (finalSoldDate && Math.abs(parseInt(finalSoldDate)) < Math.abs(parseInt(buyDate))) {
         return next(errorHandler(400, "The sold date can't be earlier than the buy date. Please double-check your dates."));
     }
-    if (!itemRegex.test(itemName)) return next(errorHandler(400,"Item name can only include letters, numbers, !, |, ★, 壱, and spaces. Please try again."));
-    if (!itemUrlRegex.test(trimImageUrl)) return next(errorHandler(400, "Item image url must be valid syntax."));
+    if (!itemRegex.test(itemName)) return next(errorHandler(400,"Item name can only include letters, numbers, !, |, ★, 壱, (), -, ™ and spaces. Please try again."));
+    if (trimImageUrl !== ''){
+        if (!itemUrlRegex.test(trimImageUrl)) return next(errorHandler(400, "Item image url must be valid syntax."));
+    }
     try {
     const item = new Item({
         userId: req.user.id,
