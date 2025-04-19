@@ -14,6 +14,29 @@ interface TableProps {
   title?: string;
 }
 
+function decimalAdjust(type:string, value:number, exp:number) {
+    type = String(type);
+    if (!["round", "floor", "ceil"].includes(type)) {
+      throw new TypeError(
+        "The type of decimal adjustment must be one of 'round', 'floor', or 'ceil'.",
+      );
+    }
+    exp = Number(exp);
+    value = Number(value);
+    if (exp % 1 !== 0 || Number.isNaN(value)) {
+      return NaN;
+    } else if (exp === 0) {
+      return Math[type](value);
+    }
+    const [magnitude, exponent = 0] = value.toString().split("e");
+    const adjustedValue = Math[type](`${magnitude}e${exponent - exp}`);
+    // Shift back
+    const [newMagnitude, newExponent = 0] = adjustedValue.toString().split("e");
+    return Number(`${newMagnitude}e${+newExponent + exp}`);
+};
+
+const round10 = (value:number, exp:number) => decimalAdjust("round", value, exp);
+
 function Table({ items, title = "Recent Sales" }: TableProps) {
   return (
     <div data-property-1="sales" className="w-full max-w-[535px] bg-green-500 rounded-xl outline-2 outline-green-300 flex flex-col justify-start items-start overflow-hidden">
@@ -77,7 +100,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                             </div>
                             <div className="col-span-2 text-right">
                                 <div className="text-beige-100 text-lg font-bold font-display2 leading-tight tracking-tight text-center">
-                                    { item.soldPrice? (item.soldPrice - item.buyPrice): (0 - item.buyPrice)}c
+                                    { item.soldPrice? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): round10(0 - item.buyPrice,-2)}c
                                 </div>
                             </div>
                         </div>
