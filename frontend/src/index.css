@@ -191,6 +191,6 @@ body{
   --font-display2: "Grifter";
   --radius-5xl: 60px;
   --spacing-block: 400px;
-  --spacing-table-1: 24px;
-  --spacing-table-2: 16px;
+  --spacing-table-1: 24px; /* card 6*/
+  --spacing-table-2: 16px; /* space card*/
 }

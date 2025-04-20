@@ -128,15 +128,13 @@ function Dashboard() {
           ></Card>
         </div>
       )}
-      { false && (
+      { true && (
         <div className='w-full flex flex-col gap-5 items-center'>
           <BarChart data={monthlyData}></BarChart>
           <Table items={soldItems}></Table>
         </div>
       )}
-      <div>
-        {/* pamietac ze jak nie ma zaladowanych przedmiotow to ma wyswietlic ze czeka za przedmiotami */}
-        {/* tablica do edytowania rekordow z useitemstore */}
+      <div className='w-full'>
         <EditTable/>
       </div>
     </div>
