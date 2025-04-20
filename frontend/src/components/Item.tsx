@@ -11,6 +11,8 @@ interface Item {
 
 interface ItemProp {
   item: Item
+  onDelete: (id: string) => void
+  onUpdate: (id: string, updatedItem: Partial<Item>) => void
 }
 
 function decimalAdjust(type:string, value:number, exp:number) {
@@ -59,7 +61,8 @@ function Item({item}: ItemProp) {
         <div className="flex justify-start items-center">date sold</div><div className="text-beige-100">{item.soldDate ? ( new Date(item.soldDate* 1000).toLocaleDateString()): 'not sold'}</div>
         <div className="flex justify-start items-center">price sold</div><div className={`text-beige-100 ${ item.soldPrice ? "font-display2": ""}`}>{item.soldPrice ? ( item.soldPrice): 'not sold'}</div>
         <div className="flex justify-start items-center">profit</div><div className={`text-beige-100 ${ item.soldPrice ? "font-display2": ""}`}>{ item.soldPrice? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): "not sold"}</div>
-        <div className="col-span-2 flex items-center justify-center bg-midnight rounded-2xl mx-20 my-3 cursor-pointer"><div className="py-3 px-3 text-red">delete</div></div>
+        <div className="flex items-center justify-center bg-midnight rounded-2xl ml-3 my-3 cursor-pointer"><div className="py-3 px-3 text-red">delete</div></div>
+        <div className="flex items-center justify-center bg-midnight rounded-2xl mr-3 my-3 cursor-pointer"><div className="py-3 px-3 text-green-300">edit</div></div>
     </div>
   )
 }

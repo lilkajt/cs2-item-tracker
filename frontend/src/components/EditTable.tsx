@@ -5,7 +5,7 @@ import { FiChevronLeft,FiChevronsLeft, FiChevronRight, FiChevronsRight} from "re
 
 function EditTable() {
     const {items, pagination, fetchItems} = useItemStore();
-    const [currentPage, setCurrentPage] = useState(pagination.currentPage)
+    const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
 
     useEffect(()=> {
         fetchItems(currentPage);
@@ -15,13 +15,12 @@ function EditTable() {
         setCurrentPage(page);
     };
 
-    for (const element of items) {
-        // console.log(element);
-    }
-    console.log(pagination);
-
     const handleDelete = () => {
         console.log('clicked delete');
+    };
+
+    const handleUpdate = () => {
+        console.log('updated values');
     };
 
   return (
