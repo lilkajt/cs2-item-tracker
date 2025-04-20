@@ -1,21 +1,29 @@
 import useItemStore from "@/store/useItemStore";
 import Item from "./Item";
-
-interface item {
-    _id: string
-    itemName: string
-    buyPrice: number
-    buyDate: number
-    soldPrice?: number
-    soldDate?: number
-    imageUrl?: string
-}
+import { useState , useEffect} from "react";
+import { FiChevronLeft,FiChevronsLeft, FiChevronRight, FiChevronsRight} from "react-icons/fi";
 
 function EditTable() {
-    const {items} = useItemStore();
+    const {items, pagination, fetchItems} = useItemStore();
+    const [currentPage, setCurrentPage] = useState(pagination.currentPage)
+
+    useEffect(()=> {
+        fetchItems(currentPage);
+    },[fetchItems, currentPage]);
+
+    const handlePageChange = (page:number) => {
+        setCurrentPage(page);
+    };
+
     for (const element of items) {
-        console.log(element);
+        // console.log(element);
     }
+    console.log(pagination);
+
+    const handleDelete = () => {
+        console.log('clicked delete');
+    };
+
   return (
     <>
         <div className="bg-green-500 outline-2 outline-green-300 text-midnight rounded-2xl">
@@ -28,13 +36,48 @@ function EditTable() {
             </div>
             {/* adjust columns if above sm turn into table */}
             { items.length > 0 && (
-                <div className="flex w-full flex-col px-table-1 pb-table-1 overflow-clip">
-                    {items.map((item) => (
-                        <Item item={item}/>
-                    ))}
-                </div>
+                <>
+                    <div className="flex w-full flex-col px-table-1 pb-table-1 overflow-clip">
+                        {items.map((item) => (
+                            <Item item={item} key={item._id}/>
+                        ))}
+                    </div>
+                    {/* pagination */}
+                    <div className="flex flex-row w-full justify-center items-center">
+                        <button
+                        onClick={() => handlePageChange(1)}
+                        disabled={!pagination.hasPrevPage}
+                        className={`text-beige-100 flex items-center py-1 px-3 ${!pagination.hasPrevPage ? ("cursor-not-allowed text-midnight") : "cursor-pointer"}`}
+                        >
+                            <FiChevronsLeft size={64}/>
+                        </button>
+                        <button
+                        onClick={() => handlePageChange(currentPage-1)}
+                        disabled={!pagination.hasPrevPage}
+                        className={`text-beige-100 flex items-center py-1 px-3 ${!pagination.hasPrevPage ? ("cursor-not-allowed text-midnight") : "cursor-pointer"}`}
+                        >
+                            <FiChevronLeft size={64}/>
+                        </button>
+                        <div className="flex text-beige-100 h-full text-5xl select-none">
+                            <div>{currentPage}</div>
+                        </div>
+                        <button
+                        onClick={() => handlePageChange(currentPage+1)}
+                        disabled={!pagination.hasNextPage}
+                        className={`text-beige-100 flex items-center py-1 px-3 ${!pagination.hasNextPage ? ("cursor-not-allowed text-midnight") : "cursor-pointer"}`}
+                        >
+                            <FiChevronRight size={64}/>
+                        </button>
+                        <button
+                        onClick={() => handlePageChange(pagination.totalPages)}
+                        disabled={!pagination.hasNextPage}
+                        className={`text-beige-100 flex items-center py-1 px-3 ${!pagination.hasNextPage ? ("cursor-not-allowed text-midnight") : "cursor-pointer"}`}
+                        >
+                            <FiChevronsRight size={64}/>
+                        </button>
+                    </div>
+                </>
             )}
-            {/* // component item -> display items with pagination */}
 
             { items.length === 0 &&(
                 <div className="flex w-full px-table-1 pb-table-1 text-beige-100 justify-center items-center text-3xl">
