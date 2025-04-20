@@ -43,11 +43,9 @@ function Item({item}: ItemProp) {
     data-property="item"
     className="grid grid-flow-row grid-cols-2 text-midnight gap-4 text-xl border-2 border-green-300 rounded-2xl pb-table-1"
     >
-        {/* another approach can be done -> div>category,item in one div */}
         <div className="flex justify-start items-center">image</div>
         {item.imageUrl ? (
             <div className="overflow-hidden flex justify-center items-center">
-                {/* <img className="w-32" src="https://community.fastly.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQwnfCcJmxDv9rhwIHZwqP3a-uGwz9Xv8F0j-qQrI3xiVLkrxVuZW-mJoWLMlhpWhFkc9M/360fx360f" alt={item.itemName} /> */}
                 <img className="w-32" src={item.imageUrl} alt={item.itemName} />
             </div>
         ) : (

@@ -74,22 +74,9 @@ const recentSales = [
 ];
 
 function Dashboard() {
-  const { fetchItems, items, error, pagination } = useItemStore();
+  const { items } = useItemStore();
 
-  useEffect(()=>{
-    fetchItems();
-  }, [fetchItems]);
-  
   const soldItems = items.filter((item) => {return item.soldDate})
-  // for (const item in soldItems) {
-  //   if (Object.prototype.hasOwnProperty.call(soldItems, item)) {
-  //     console.log(soldItems[item]);
-  //   }
-  // }
-  // console.log(items.length > 1&& items[0]._id);
-  // console.log(pagination);
-  // console.log(error);
-
   const handleOpenModal = () => {
     console.log('modal open');
   };
@@ -128,7 +115,7 @@ function Dashboard() {
           ></Card>
         </div>
       )}
-      { true && (
+      { false && (
         <div className='w-full flex flex-col gap-5 items-center'>
           <BarChart data={monthlyData}></BarChart>
           <Table items={soldItems}></Table>

@@ -25,7 +25,7 @@ type ItemState = {
   loading: boolean
   error: string | null
   pagination: Pagination
-  fetchItems: () => Promise<void>
+  fetchItems: (page?: number, limit?: number) => Promise<void>
   addItem: (item: Omit<Item, 'id'>) => Promise<void>
   updateItem: (id: string, updates: Partial<Item>) => Promise<void>
   deleteItem: (id: string) => Promise<void>
@@ -46,9 +46,9 @@ const useItemStore = create<ItemState>((set) => ({
     hasPrevPage: false
   },
   
-  fetchItems: async () => {
+  fetchItems: async (page = 1, limit = 10) => {
     set({ loading: true, error: null })
-    await axios.get(API_URL)
+    await axios.get(`${API_URL}?page=${page}&limit=${limit}`)
     .then( response => {
       set({ items: response.data.items, pagination:response.data.pagination, loading: false });
     })
