@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { ReactNode, useEffect } from "react"
 
 type ModalItemProps = {
     open: boolean
@@ -7,6 +7,17 @@ type ModalItemProps = {
 }
 
 function ModalItem({open, onClose, children}:ModalItemProps) {
+    useEffect( () => {
+        if (open) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [open]);
+
     return (
         <>
             <div

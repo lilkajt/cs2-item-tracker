@@ -1,6 +1,7 @@
 import { FiImage } from "react-icons/fi";
 import ModalItem from "./ModalItem";
 import { useState } from "react";
+import Input from "./Input";
 interface Item {
   _id: string
   itemName: string
@@ -108,7 +109,7 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
                   <img className="w-32" src={item.imageUrl} alt={item.itemName} />
               </div>
           ) : (
-              <div className="relative text-beige-100 flex justify-center">
+              <div className="text-beige-100 flex justify-center">
                   <FiImage size={64}/>
               </div>
           )}
@@ -123,8 +124,82 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
       </div>
       <ModalItem
       open={open}
-      onClose={() => closeModal}
+      onClose={closeModal}
       >
+        <div className="grid grid-flow-row grid-cols-2 justify-center items-center mx-5 my-25 gap-9">
+          <div className="col-span-2">
+            <div className="flex flex-col justify-center items-center mb-5">
+              <Input
+              placeholder="Choose item or write"
+              className="font-bold text-2xl!"
+              value={editedItem.itemName || ''}
+              onChange={handleInputChange}
+              name="itemName"
+              />
+              <div className="text-beige-100 leading-15">Search for item you would like to add or write your own.</div>
+              {/* <div className="text-red text-2xl">Error</div> */}
+            </div>
+            <div className="flex col-span-2 flex-col justify-center items-center mb-5">
+              <Input
+              placeholder="Write buy price"
+              className="font-bold text-2xl!"
+              value={editedItem.buyPrice || 0}
+              onChange={handleInputChange}
+              name="buyPrice"
+              type="number"
+              />
+              <div className="text-beige-100 leading-15">Enter price you bought item for.</div>
+            </div>
+            <div className="flex col-span-2 flex-col justify-center items-center mb-5">
+              <Input
+              placeholder="Enter item buy date"
+              className="font-bold text-2xl!"
+              value={editedItem.buyDate || Date.now()}
+              onChange={handleInputChange}
+              name="buyDate"
+              type="date"
+              />
+              <div className="text-beige-100 leading-15">Pick date you bought item.</div>
+            </div>
+          </div>
+          <div className="col-span-2">
+            <div className="flex flex-col justify-center items-center mb-5">
+              <Input
+              placeholder="Enter item sold price"
+              className="font-bold text-2xl!"
+              value={editedItem.soldPrice || undefined}
+              onChange={handleInputChange}
+              name="soldPrice"
+              type="number"
+              />
+              <div className="text-beige-100 leading-15">Enter price you bought item for.
+              If you not sold yet, leave.</div>
+            </div>
+            <div className="flex flex-col justify-center items-center mb-5">
+              <Input
+              placeholder="Enter item sold date"
+              className="font-bold text-2xl!"
+              value={editedItem.soldDate || undefined}
+              onChange={handleInputChange}
+              name="soldDate"
+              type="date"
+              />
+              <div className="text-beige-100 leading-15">Pick date you sold item
+              If you not sold yet, leave.</div>
+            </div>
+            <div className="flex col-span-2 flex-col justify-center items-center mb-5">
+              <Input
+              placeholder="write image url"
+              className="font-bold text-2xl!"
+              value={editedItem.imageUrl || ''}
+              onChange={handleInputChange}
+              name="imageUrl"
+              />
+              <div className="text-beige-100 leading-15">Write image url.</div>
+            </div>
+          </div>
+          {/* here add flex 2 divs with save button and close */}
+        </div>
         {/* image url -> can be empty, check validation if not */}
         {/* item name -> check validation */}
         {/* buy date -> choose from calendar, convert to timestamp, cant be after sold date if sold date set */}
@@ -132,9 +207,7 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
         {/* sold date -> can be null/empty, if set check if after buy date, if sold price not set but date sold set, set sold price to 0 */}
         {/* sold price -> number for 0+, if sold date not set, set sold date for current time -> convert to timestamp */}
         {/* dates from calendar will be chosen as date type */}
-        {/* input type x value={editedItem.prop || ''} onChange={handleInputChange}
-          close, save modal button */}
-        modal inside
+        {/* input type x value={editedItem.prop || ''} onChange={handleInputChange} */}
       </ModalItem>
     </>
   )

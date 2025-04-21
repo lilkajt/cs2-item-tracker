@@ -7,7 +7,7 @@ function EditTable() {
     const {items, pagination, fetchItems} = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
     const [processing, setIsProcessing] = useState(false);
-    
+
     useEffect(()=> {
         fetchItems(currentPage);
     },[fetchItems, currentPage]);
