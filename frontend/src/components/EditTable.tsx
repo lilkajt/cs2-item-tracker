@@ -6,7 +6,8 @@ import { FiChevronLeft,FiChevronsLeft, FiChevronRight, FiChevronsRight} from "re
 function EditTable() {
     const {items, pagination, fetchItems} = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
-
+    const [processing, setIsProcessing] = useState(false);
+    
     useEffect(()=> {
         fetchItems(currentPage);
     },[fetchItems, currentPage]);
@@ -17,12 +18,15 @@ function EditTable() {
 
     const handleDelete = () => {
         console.log('clicked delete');
+        // delete item from store
+        // notification of success delete? toast
     };
 
     const handleUpdate = () => {
         console.log('updated values');
+        // update item from store
     };
-
+    // delete or update -> add processing display error below edit items
   return (
     <>
         <div className="bg-green-500 outline-2 outline-green-300 text-midnight rounded-2xl">
@@ -38,7 +42,7 @@ function EditTable() {
                 <>
                     <div className="flex w-full flex-col px-table-1 pb-table-1 overflow-clip">
                         {items.map((item) => (
-                            <Item item={item} key={item._id}/>
+                            <Item item={item} key={item._id} onUpdate={handleUpdate} onDelete={handleDelete}/>
                         ))}
                     </div>
                     {/* pagination */}
