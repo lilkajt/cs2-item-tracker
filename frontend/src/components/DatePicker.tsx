@@ -29,16 +29,20 @@ export function DatePicker({
       <PopoverTrigger asChild>
         <Button
           className={cn(
-            "w-72 h-12 px-2.5 rounded-lg justify-start text-left font-bold text-2xl outline-2 outline-green-300 bg-transparent text-beige-100 overflow-hidden",
+            "w-full sm:w-80 h-14 px-4 rounded-lg justify-start text-left font-bold text-xl sm:text-2xl outline-2 outline-green-300 bg-midnight text-beige-100 overflow-hidden",
             !date && "text-beige-200",
             className
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 text-beige-100" />
+          <CalendarIcon className="mr-3 h-6 w-6 text-beige-100" />
           {date ? format(date, "dd/MM/yyyy") : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent 
+        className="w-auto p-0" 
+        align="center"
+        sideOffset={4}
+      >
         <Calendar
           mode="single"
           selected={date}
