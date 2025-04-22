@@ -119,6 +119,14 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
   const handleSave = () => {
     onUpdate(item._id, editedItem);
     // here logic validation -> writen below in modal -> have to be done before save
+    {/* 
+      image url -> can be empty, check validation if not
+      item name -> check validation
+      buy date -> choose from calendar, convert to timestamp, cant be after sold date if sold date set
+      buy price -> number from 0+
+      sold date -> can be null/empty, if set check if after buy date, if sold price not set but date sold set, set sold price to 0
+      sold price -> number for 0+, if sold date not set, set sold date for current time -> convert to timestamp
+    */}
     closeModal();
   };
 
@@ -241,23 +249,13 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
               ): ""}
             </div>
           </div>
-          <div className="col-span-2 flex flex-row justify-center items-center mb-5 gap-5">
-            <ButtonConfirm id="" onClick={handleSave}>Save</ButtonConfirm>
+          <div className="col-span-2 flex flex-row justify-center items-center mb-5 gap-5 sm:mx-20">
+            <ButtonConfirm onClick={handleSave}>Save</ButtonConfirm>
             <button onClick={closeModal} className="flex items-center justify-center outline-2 outline-green-500 bg-midnight h-12 text-beige-200 rounded-lg text-3xl cursor-pointer w-[60%]">
               <FiX />
             </button>
           </div>
         </div>
-        {/* 
-          image url -> can be empty, check validation if not
-          item name -> check validation
-          buy date -> choose from calendar, convert to timestamp, cant be after sold date if sold date set
-          buy price -> number from 0+
-          sold date -> can be null/empty, if set check if after buy date, if sold price not set but date sold set, set sold price to 0
-          sold price -> number for 0+, if sold date not set, set sold date for current time -> convert to timestamp
-          dates from calendar will be chosen as date type
-          input type x value={editedItem.prop || ''} onChange={handleInputChange}
-        */}
       </ModalItem>
     </>
   )
