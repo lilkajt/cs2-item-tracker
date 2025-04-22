@@ -16,14 +16,17 @@ function EditTable() {
         setCurrentPage(page);
     };
 
-    const handleDelete = () => {
-        console.log('clicked delete');
+    const handleDelete = async (id: string) => {
+        console.log('clicked delete id:', id);
+        // setIsProcessing(true);
         // delete item from store
         // notification of success delete? toast
     };
 
-    const handleUpdate = () => {
-        console.log('updated values');
+    const handleUpdate = (id: string, updatedItem: Partial<Item>) => {
+        console.log('id: ', id);
+        console.log('updateItem: ', updatedItem);
+        // setIsProcessing(true);
         // update item from store
     };
     // delete or update -> add processing display error below edit items
