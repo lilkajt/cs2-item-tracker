@@ -1,6 +1,6 @@
 import { FiImage, FiX } from "react-icons/fi";
 import ModalItem from "./ModalItem";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import Input from "./Input";
 import ButtonConfirm from "./ButtonConfirm";
 import { DatePicker } from "./DatePicker";
@@ -43,6 +43,9 @@ function decimalAdjust(type:string, value:number, exp:number) {
 };
 
 const round10 = (value:number, exp:number) => decimalAdjust("round", value, exp);
+const itemRegex = /^[a-zA-Z0-9! |★壱()-™]+$/;
+const priceRegex = /^-?\d+(\.\d{1,2})?$/;
+const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
 function Item({item, onUpdate, onDelete}: ItemProp) {
   const [open, setOpen] = useState(false);
@@ -116,18 +119,63 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
     }
   };
 
-  const handleSave = () => {
-    onUpdate(item._id, editedItem);
-    // here logic validation -> writen below in modal -> have to be done before save
-    {/* 
-      image url -> can be empty, check validation if not
-      item name -> check validation
-      buy date -> choose from calendar, convert to timestamp, cant be after sold date if sold date set
-      buy price -> number from 0+
-      sold date -> can be null/empty, if set check if after buy date, if sold price not set but date sold set, set sold price to 0
-      sold price -> number for 0+, if sold date not set, set sold date for current time -> convert to timestamp
-    */}
-    closeModal();
+  const validateData = (data: Partial<Item>) => {
+    const errors = {
+      imageUrl: '',
+      itemName: '',
+      buyPrice: '',
+      buyDate: '',
+      soldPrice: '',
+      soldDate: ''
+    };
+    let isValid = true;
+    
+    if (!data.itemName || data.itemName.trim() === '') {
+      errors.itemName = 'Item name is required';
+      isValid = false;
+    } else if (!itemRegex.test(data.itemName)) {
+      errors.itemName = 'Item name contains invalid characters';
+      isValid = false;
+    };
+    
+    if (data.buyPrice === undefined || data.buyPrice === null || data.buyPrice < 0) {
+      errors.buyPrice = 'Buy price must be 0 or greater';
+      isValid = false;
+    } else if (!priceRegex.test(String(data.buyPrice))) {
+      errors.buyPrice = 'Buy price must be a valid number with up to 2 decimal places';
+      isValid = false;
+    };
+    
+    if (data.imageUrl && data.imageUrl.trim() !== '' && !itemUrlRegex.test(data.imageUrl)) {
+      errors.imageUrl = 'Please enter a valid image URL';
+      isValid = false;
+    };
+    
+    if (data.soldPrice !== undefined && data.soldPrice !== null && String(data.soldPrice) !== '') {
+      if (Number(data.soldPrice) < 0) {
+        errors.soldPrice = 'Sold price must be 0 or greater';
+        isValid = false;
+      } else if (!priceRegex.test(String(data.soldPrice))) {
+        errors.soldPrice = 'Sold price must be a valid number with up to 2 decimal places';
+        isValid = false;
+      }
+    };
+    
+    if (data.buyDate && data.soldDate && data.buyDate > data.soldDate) {
+      errors.soldDate = 'Sold date must be after buy date';
+      isValid = false;
+    };
+
+    setErrors(errors);
+    return isValid;
+  };
+
+  const handleSave = (e: FormEvent) => {
+    e.preventDefault();
+    if (validateData(editedItem)){
+      onUpdate(item._id, editedItem);
+      closeModal();
+    }
   };
 
   const handleDelete = () => {

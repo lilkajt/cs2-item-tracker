@@ -4,7 +4,7 @@ import { useState , useEffect} from "react";
 import { FiChevronLeft,FiChevronsLeft, FiChevronRight, FiChevronsRight} from "react-icons/fi";
 
 function EditTable() {
-    const {items, pagination, fetchItems} = useItemStore();
+    const {items, pagination, error, fetchItems, deleteItem, updateItem} = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
     const [processing, setIsProcessing] = useState(false);
 
@@ -16,18 +16,22 @@ function EditTable() {
         setCurrentPage(page);
     };
 
+    // notification of success delete? toast
     const handleDelete = async (id: string) => {
+        setIsProcessing(true);
         console.log('clicked delete id:', id);
-        // setIsProcessing(true);
-        // delete item from store
-        // notification of success delete? toast
+        await deleteItem(id);
+        fetchItems(currentPage);
+        setIsProcessing(false);
     };
 
-    const handleUpdate = (id: string, updatedItem: Partial<Item>) => {
+    const handleUpdate = async (id: string, updatedItem: Partial<Item>) => {
+        setIsProcessing(true);
         console.log('id: ', id);
         console.log('updateItem: ', updatedItem);
-        // setIsProcessing(true);
-        // update item from store
+        await updateItem(id, updatedItem);
+        fetchItems(currentPage);
+        setIsProcessing(false);
     };
     // delete or update -> add processing display error below edit items
   return (
@@ -38,6 +42,9 @@ function EditTable() {
                     <div>
                         Edit Items
                     </div>
+                    {processing && (
+                        <div className="text-beige-100">Processing...</div>
+                    )}
                 </div>
             </div>
             {/* adjust columns if above sm turn into table */}

@@ -27,7 +27,7 @@ type ItemState = {
   pagination: Pagination
   fetchItems: (page?: number, limit?: number) => Promise<void>
   addItem: (item: Omit<Item, 'id'>) => Promise<void>
-  updateItem: (id: string, updates: Partial<Item>) => Promise<void>
+  updateItem: (id: string, updatedItem: Partial<Item>) => Promise<void>
   deleteItem: (id: string) => Promise<void>
 }
 
@@ -58,60 +58,40 @@ const useItemStore = create<ItemState>((set) => ({
   },
   
   addItem: async (item) => {
-    set({ loading: true, error: null })
-    try {
-      const response = await axios.post(`${API_URL}/create`, item)
-      set(state => ({ 
-        items: [...state.items, response.data],
+    set({ loading: true, error: null });
+    await axios.post(`${API_URL}/create`, item)
+    .then( response => {
+      set( state => ({
+        items: [...state.items, response.data.item],
         loading: false
-      }))
-    } catch (error) {
-      set({ 
-        error: axios.isAxiosError(error) && error.response?.data?.message 
-          ? error.response.data.message 
-          : 'Failed to add item',
-        loading: false 
-      })
-    }
+      }));
+    })
+    .catch( error => {
+      set({ loading: false, error: error.response.data.message || "Failed to update item" });
+    });
   },
   
-  updateItem: async (id, updates) => {
+  updateItem: async (id, updatedItem) => {
     set({ loading: true, error: null })
-    try {
-      const response = await axios.put(`${API_URL}/update/${id}`, updates)
-      set(state => ({
-        items: state.items.map(item => 
-          item._id === id ? response.data : item
-        ),
-        loading: false
-      }))
-    } catch (error) {
-      set({ 
-        error: axios.isAxiosError(error) && error.response?.data?.message 
-          ? error.response.data.message 
-          : 'Failed to update item',
-        loading: false 
-      })
-    }
+    await axios.put(`${API_URL}/update/${id}`, updatedItem)
+    .then( response => {
+      set({loading: false})
+    })
+    .catch( error => {
+      set( {error: error.response.data.message || "Failed to update item", loading: false});
+    });
   },
   
   deleteItem: async (id) => {
     set({ loading: true, error: null })
-    try {
-      await axios.delete(`${API_URL}/delete/${id}`)
-      set(state => ({
-        items: state.items.filter(item => item._id !== id),
-        loading: false
-      }))
-    } catch (error) {
-      set({ 
-        error: axios.isAxiosError(error) && error.response?.data?.message 
-          ? error.response.data.message 
-          : 'Failed to delete item',
-        loading: false 
-      })
-    }
+    await axios.delete(`${API_URL}/delete/${id}`)
+    .then( response => {
+      set({loading: false});
+    })
+    .catch( error => {
+      set( {error: error.response.data.message || "Failed to delete item", loading: false});
+    });
   },
 }))
 
-export default useItemStore
+export default useItemStore;
