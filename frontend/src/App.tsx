@@ -10,11 +10,13 @@ import PrivateRoute from './components/PrivateRoute';
 import AuthGuard from './components/ProtectedRoute';
 import useAuthStore from './store/useAuthStore';
 import { useEffect } from 'react';
+import { setupAxiosInterceptors } from './utils/axiosInterceptor';
 
 function App() {
-  const {checkAuth} = useAuthStore();
+  const {checkAuth, logout} = useAuthStore();
 
   useEffect(()=>{
+    setupAxiosInterceptors(logout);
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'auth-storage' || e.key === null){
         checkAuth();
@@ -23,7 +25,7 @@ function App() {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [checkAuth]);
+  }, [checkAuth, logout]);
 
   return (
     <>
