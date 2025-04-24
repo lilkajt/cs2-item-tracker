@@ -26,7 +26,6 @@ type ItemState = {
   error: string | null
   pagination: Pagination
   fetchItems: (page?: number, limit?: number) => Promise<void>
-  addItem: (item: Omit<Item, 'id'>) => Promise<void>
   updateItem: (id: string, updatedItem: Partial<Item>) => Promise<void>
   deleteItem: (id: string) => Promise<void>
 }
@@ -57,25 +56,12 @@ const useItemStore = create<ItemState>((set) => ({
     });
   },
   
-  addItem: async (item) => {
-    set({ loading: true, error: null });
-    await axios.post(`${API_URL}/create`, item)
-    .then( response => {
-      set( state => ({
-        items: [...state.items, response.data.item],
-        loading: false
-      }));
-    })
-    .catch( error => {
-      set({ loading: false, error: error.response.data.message || "Failed to update item" });
-    });
-  },
-  
   updateItem: async (id, updatedItem) => {
     set({ loading: true, error: null })
     await axios.put(`${API_URL}/update/${id}`, updatedItem)
     .then( response => {
       set({loading: false})
+      return response.data;
     })
     .catch( error => {
       set( {error: error.response.data.message || "Failed to update item", loading: false});
@@ -85,7 +71,7 @@ const useItemStore = create<ItemState>((set) => ({
   deleteItem: async (id) => {
     set({ loading: true, error: null })
     await axios.delete(`${API_URL}/delete/${id}`)
-    .then( response => {
+    .then( () => {
       set({loading: false});
     })
     .catch( error => {
