@@ -3,17 +3,31 @@ import Items from "./Item";
 import { useState , useEffect} from "react";
 import { FiChevronLeft,FiChevronsLeft, FiChevronRight, FiChevronsRight} from "react-icons/fi";
 import { Item } from "@/store/useItemStore";
+import { toast } from 'sonner';
 
 function EditTable() {
-    const {items, pagination, error, fetchItems, deleteItem, updateItem} = useItemStore();
+    const {items, pagination, fetchItems, deleteItem, updateItem, serverResponse, clearServerResponse} = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
     const [processing, setIsProcessing] = useState(false);
-    // notification of success delete? toast -> shadcn ui implement
-    // toast jak sie nie uda/ toast jak sie uda delete error
 
     useEffect(()=> {
         fetchItems(currentPage);
     },[fetchItems, currentPage]);
+
+    useEffect( () => {
+        if (serverResponse) {
+            if (serverResponse.success) {
+                toast.success(serverResponse.message);
+            } else {
+                toast.error(serverResponse.message);
+            }
+
+            const timer = setTimeout(() => {
+                clearServerResponse();
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [serverResponse , clearServerResponse]);
 
     const handlePageChange = (page:number) => {
         setCurrentPage(page);

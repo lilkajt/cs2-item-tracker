@@ -11,6 +11,7 @@ import AuthGuard from './components/ProtectedRoute';
 import useAuthStore from './store/useAuthStore';
 import { useEffect } from 'react';
 import { setupAxiosInterceptors } from './utils/axiosInterceptor';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
   const {checkAuth, logout} = useAuthStore();
@@ -50,6 +51,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster position='bottom-right' expand={false} richColors/>
     </>
   )
 }

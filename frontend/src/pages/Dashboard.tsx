@@ -10,6 +10,7 @@ import useItemStore, { Item } from '@/store/useItemStore';
 import axios from 'axios';
 import { FormEvent, useState } from 'react';
 import { FiPlusCircle, FiX } from "react-icons/fi";
+import { toast } from 'sonner';
 
 // Średni zwrot z inwestycji (ROI) dla sprzedanych przedmiotów
 // Średnia cena zakupu vs. średnia cena sprzedaży
@@ -79,7 +80,7 @@ function Dashboard() {
     if (validateData(value)){
       await axios.post('/api/item/create', value)
       .then( () => {
-        // toast success
+        toast.success("Item added");
         closeModal();
         fetchItems(pagination.currentPage);
       })
