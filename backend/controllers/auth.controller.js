@@ -69,7 +69,7 @@ export const signin = async (req, res, next) => {
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "3h"});
         res
         .status(200)
-        .cookie("access_token", token, {httpOnly: true, secure: process.env.NODE_ENV === 'production' ,expires: new Date(Date.now() + 10800000)})
+        .cookie("access_token", token, {httpOnly: true, secure: process.env.NODE_ENV === 'production' ,expires: new Date(Date.now() + 3600 * 1000 * 3)})
         // 3h valid
         .json(rest);
     } catch (error) {
