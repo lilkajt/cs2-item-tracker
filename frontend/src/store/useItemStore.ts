@@ -6,9 +6,9 @@ export type Item = {
   itemName: string
   buyPrice: number
   buyDate: number
-  soldPrice?: number
-  soldDate?: number
-  imageUrl?: string
+  soldPrice: number | null
+  soldDate: number | null
+  imageUrl: string | null
 }
 
 export type Pagination = {
