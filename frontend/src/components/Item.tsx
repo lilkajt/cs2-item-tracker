@@ -4,16 +4,9 @@ import { FormEvent, useState } from "react";
 import Input from "./Input";
 import ButtonConfirm from "./ButtonConfirm";
 import { DatePicker } from "./DatePicker";
+import { round10 } from "@/utils/decimalAdjust";
+import { Item } from "@/store/useItemStore";
 
-interface Item {
-  _id: string
-  itemName: string
-  buyPrice: number
-  buyDate: number
-  soldPrice?: number
-  soldDate?: number
-  imageUrl?: string
-};
 
 interface ItemProp {
   item: Item
@@ -21,33 +14,11 @@ interface ItemProp {
   onUpdate: (id: string, updatedItem: Partial<Item>) => void
 }
 
-function decimalAdjust(type:string, value:number, exp:number) {
-  type = String(type);
-  if (!["round", "floor", "ceil"].includes(type)) {
-    throw new TypeError(
-      "The type of decimal adjustment must be one of 'round', 'floor', or 'ceil'.",
-    );
-  }
-  exp = Number(exp);
-  value = Number(value);
-  if (exp % 1 !== 0 || Number.isNaN(value)) {
-    return NaN;
-  } else if (exp === 0) {
-    return Math[type](value);
-  }
-  const [magnitude, exponent = 0] = value.toString().split("e");
-  const adjustedValue = Math[type](`${magnitude}e${exponent - exp}`);
-  // Shift back
-  const [newMagnitude, newExponent = 0] = adjustedValue.toString().split("e");
-  return Number(`${newMagnitude}e${+newExponent + exp}`);
-};
-
-const round10 = (value:number, exp:number) => decimalAdjust("round", value, exp);
 const itemRegex = /^[a-zA-Z0-9! |★壱()-™]+$/;
 const priceRegex = /^-?\d+(\.\d{1,2})?$/;
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
-function Item({item, onUpdate, onDelete}: ItemProp) {
+function Items({item, onUpdate, onDelete}: ItemProp) {
   const [open, setOpen] = useState(false);
   const [editedItem,setEditedItem] = useState<Partial<Item>>({});
   const [errors,setErrors] = useState({
@@ -77,7 +48,7 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    console.log(`name ${name}, value ${value}`);
+
     setEditedItem(prev => ({
       ...prev,
       [name]: value
@@ -150,6 +121,14 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
       errors.imageUrl = 'Please enter a valid image URL';
       isValid = false;
     };
+
+    if (data.soldDate && (!data.soldPrice || Number(data.soldPrice) === 0)) {
+      data.soldPrice = 0;
+    };
+
+    if (data.soldPrice && Number(data.soldPrice) > 0 && !data.soldDate) {
+      data.soldDate = Date.now();
+    };
     
     if (data.soldPrice !== undefined && data.soldPrice !== null && String(data.soldPrice) !== '') {
       if (Number(data.soldPrice) < 0) {
@@ -203,8 +182,8 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
           <div className="flex justify-start items-center">date buy</div><div className="text-beige-100">{ new Date(item.buyDate).toLocaleDateString()}</div>
           <div className="flex justify-start items-center">price buy</div><div className="text-beige-100 font-display2">{item.buyPrice}</div>
           <div className="flex justify-start items-center">date sold</div><div className="text-beige-100">{item.soldDate ? ( new Date(item.soldDate).toLocaleDateString()): 'not sold'}</div>
-          <div className="flex justify-start items-center">price sold</div><div className={`text-beige-100 ${ item.soldPrice ? "font-display2": ""}`}>{item.soldPrice ? ( item.soldPrice): 'not sold'}</div>
-          <div className="flex justify-start items-center">profit</div><div className={`text-beige-100 ${ item.soldPrice ? "font-display2": ""}`}>{ item.soldPrice? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): "not sold"}</div>
+          <div className="flex justify-start items-center">price sold</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{item.soldPrice !== null ? item.soldPrice: 'not sold'}</div>
+          <div className="flex justify-start items-center">profit</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{ item.soldPrice !== null ? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): "not sold"}</div>
           <div className="flex items-center justify-center bg-midnight rounded-2xl mr-3 my-3 cursor-pointer" onClick={openModal}><div className="py-3 px-3 text-green-300">edit</div></div>
           <div className="flex items-center justify-center bg-midnight rounded-2xl ml-3 my-3 cursor-pointer" onClick={handleDelete}><div className="py-3 px-3 text-red">delete</div></div>
       </div>
@@ -309,4 +288,4 @@ function Item({item, onUpdate, onDelete}: ItemProp) {
   )
 }
 
-export default Item;
+export default Items;
