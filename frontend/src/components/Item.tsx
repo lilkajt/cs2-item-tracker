@@ -44,6 +44,14 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
 
   const closeModal = () => {
     setOpen(false);
+    setErrors({
+      imageUrl:'',
+      itemName: '',
+      buyPrice: '',
+      buyDate: '',
+      soldPrice: '',
+      soldDate: ''
+    })
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,6 +114,11 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
       isValid = false;
     } else if (!itemRegex.test(data.itemName)) {
       errors.itemName = 'Item name contains invalid characters';
+      isValid = false;
+    };
+
+    if (!data.buyDate){
+      errors.buyDate = "Buy date must be valid."
       isValid = false;
     };
     
@@ -196,20 +209,20 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
             <div className="flex flex-col justify-center items-center mb-5">
               <Input
               placeholder="Choose item or write"
-              className="font-bold text-2xl!"
+              className={`font-bold sm:text-2xl ${ errors.itemName ? "outline-red text-red": ""}`}
               value={editedItem.itemName || ''}
               onChange={handleInputChange}
               name="itemName"
               />
               <div className="text-beige-100 leading-15">Search for item you would like to add or write your own.</div>
               { errors.itemName ? (
-                <div className="text-red text-2xl">{errors.itemName}</div>
+                <div className="text-red text-2xl w-72">{errors.itemName}</div>
               ): ""}
             </div>
             <div className="flex col-span-2 flex-col justify-center items-center mb-5">
               <Input
               placeholder="Write buy price"
-              className="font-bold text-2xl!"
+              className={`font-bold sm:text-2xl ${ errors.buyPrice ? "outline-red text-red": ""}`}
               value={editedItem.buyPrice || 0}
               onChange={handleInputChange}
               name="buyPrice"
@@ -217,7 +230,7 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
               />
               <div className="text-beige-100 leading-15">Enter price you bought item for.</div>
               { errors.buyPrice ? (
-                <div className="text-red text-2xl">{errors.buyPrice}</div>
+                <div className="text-red text-2xl w-72">{errors.buyPrice}</div>
               ): ""}
             </div>
             <div className="flex col-span-2 flex-col justify-center items-center mb-5">
@@ -225,11 +238,11 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
               date={editedItem.buyDate ? new Date(editedItem.buyDate) : undefined}
               onSelect={handleBuyDateChange}
               placeholder="Enter item buy date"
-              className=""
+              className={`${ errors.buyDate ? "outline-red text-red": ""}`}
               />
               <div className="text-beige-100 leading-15">Pick date you bought item.</div>
               { errors.buyDate ? (
-                <div className="text-red text-2xl">{errors.buyDate}</div>
+                <div className="text-red text-2xl w-72">{errors.buyDate}</div>
               ): ""}
             </div>
           </div>
@@ -237,7 +250,7 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
             <div className="flex flex-col justify-center items-center mb-5">
               <Input
               placeholder="Enter item sold price"
-              className="font-bold text-2xl!"
+              className={`font-bold sm:text-2xl ${ errors.soldPrice ? "outline-red text-red": ""}`}
               value={editedItem.soldPrice || ""}
               onChange={handleInputChange}
               name="soldPrice"
@@ -246,7 +259,7 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
               <div className="text-beige-100 leading-15">Enter price you sold item for.
               If not sold yet, leave.</div>
               { errors.soldPrice ? (
-                <div className="text-red text-2xl">{errors.soldPrice}</div>
+                <div className="text-red text-2xl w-72">{errors.soldPrice}</div>
               ): ""}
             </div>
             <div className="flex flex-col justify-center items-center mb-5">
@@ -254,25 +267,25 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
               date={editedItem.soldDate ? new Date(editedItem.soldDate) : undefined}
               onSelect={handleSoldDateChange}
               placeholder="Enter item sold date"
-              className=""
+              className={`${ errors.soldDate ? "outline-red text-red": ""}`}
               />
               <div className="text-beige-100 leading-15">Pick date you sold item
               If not sold yet, leave.</div>
               { errors.soldDate ? (
-                <div className="text-red text-2xl">{errors.soldDate}</div>
+                <div className="text-red text-2xl w-72">{errors.soldDate}</div>
               ): ""}
             </div>
             <div className="flex col-span-2 flex-col justify-center items-center mb-5">
               <Input
               placeholder="write image url"
-              className="font-bold text-2xl!"
+              className={`font-bold sm:text-2xl ${ errors.imageUrl ? "outline-red text-red": ""}`}
               value={editedItem.imageUrl || ''}
               onChange={handleInputChange}
               name="imageUrl"
               />
               <div className="text-beige-100 leading-15">Write image url.</div>
               { errors.imageUrl ? (
-                <div className="text-red text-2xl">{errors.imageUrl}</div>
+                <div className="text-red text-2xl w-72">{errors.imageUrl}</div>
               ): ""}
             </div>
           </div>
