@@ -65,7 +65,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                             </div>
                             <div className="col-span-3 sm:col-span-2 text-right">
                                 <div className="text-beige-100 text-xs sm:text-sm font-medium leading-tight text-center">
-                                    {item.soldDate ? (new Date(item.soldDate).toLocaleDateString()) : ('not sold yet')}
+                                    {item.soldDate ? (new Date(item.soldDate).toLocaleDateString('en-GB')) : ('not sold yet')}
                                 </div>
                             </div>
                             <div className="col-span-2 text-right">
