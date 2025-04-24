@@ -1,12 +1,15 @@
 import useItemStore from "@/store/useItemStore";
-import Item from "./Item";
+import Items from "./Item";
 import { useState , useEffect} from "react";
 import { FiChevronLeft,FiChevronsLeft, FiChevronRight, FiChevronsRight} from "react-icons/fi";
+import { Item } from "@/store/useItemStore";
 
 function EditTable() {
     const {items, pagination, error, fetchItems, deleteItem, updateItem} = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
     const [processing, setIsProcessing] = useState(false);
+    // notification of success delete? toast -> shadcn ui implement
+    // toast jak sie nie uda/ toast jak sie uda delete error
 
     useEffect(()=> {
         fetchItems(currentPage);
@@ -16,10 +19,8 @@ function EditTable() {
         setCurrentPage(page);
     };
 
-    // notification of success delete? toast
     const handleDelete = async (id: string) => {
         setIsProcessing(true);
-        console.log('clicked delete id:', id);
         await deleteItem(id);
         fetchItems(currentPage);
         setIsProcessing(false);
@@ -27,13 +28,11 @@ function EditTable() {
 
     const handleUpdate = async (id: string, updatedItem: Partial<Item>) => {
         setIsProcessing(true);
-        console.log('id: ', id);
-        console.log('updateItem: ', updatedItem);
         await updateItem(id, updatedItem);
         fetchItems(currentPage);
         setIsProcessing(false);
     };
-    // delete or update -> add processing display error below edit items
+
   return (
     <>
         <div className="bg-green-500 outline-2 outline-green-300 text-midnight rounded-2xl">
@@ -52,7 +51,7 @@ function EditTable() {
                 <>
                     <div className="flex w-full flex-col px-table-1 pb-table-1 overflow-clip">
                         {items.map((item) => (
-                            <Item item={item} key={item._id} onUpdate={handleUpdate} onDelete={handleDelete}/>
+                            <Items item={item} key={item._id} onUpdate={handleUpdate} onDelete={handleDelete}/>
                         ))}
                     </div>
                     {/* pagination */}
