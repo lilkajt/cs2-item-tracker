@@ -192,9 +192,9 @@ function Items({item, onUpdate, onDelete}: ItemProp) {
               </div>
           )}
           <div className="flex justify-start items-center">item</div><div className="text-beige-100">{item.itemName}</div>
-          <div className="flex justify-start items-center">date buy</div><div className="text-beige-100">{ new Date(item.buyDate).toLocaleDateString()}</div>
+          <div className="flex justify-start items-center">date buy</div><div className="text-beige-100">{ new Date(item.buyDate).toLocaleDateString('en-GB')}</div>
           <div className="flex justify-start items-center">price buy</div><div className="text-beige-100 font-display2">{item.buyPrice}</div>
-          <div className="flex justify-start items-center">date sold</div><div className="text-beige-100">{item.soldDate ? ( new Date(item.soldDate).toLocaleDateString()): 'not sold'}</div>
+          <div className="flex justify-start items-center">date sold</div><div className="text-beige-100">{item.soldDate ? ( new Date(item.soldDate).toLocaleDateString('en-GB')): 'not sold'}</div>
           <div className="flex justify-start items-center">price sold</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{item.soldPrice !== null ? item.soldPrice: 'not sold'}</div>
           <div className="flex justify-start items-center">profit</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{ item.soldPrice !== null ? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): "not sold"}</div>
           <div className="flex items-center justify-center bg-midnight rounded-2xl mr-3 my-3 cursor-pointer" onClick={openModal}><div className="py-3 px-3 text-green-300">edit</div></div>
