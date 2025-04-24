@@ -336,7 +336,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="col-span-2 flex flex-row justify-center items-center mb-5 gap-5 sm:mx-20">
-          <ButtonConfirm onClick={handleSave}>Save</ButtonConfirm>
+          <ButtonConfirm onClick={handleSave}>Add</ButtonConfirm>
           <button onClick={closeModal} className="flex items-center justify-center outline-2 outline-green-500 bg-midnight h-12 text-beige-200 rounded-lg text-3xl cursor-pointer w-[60%]">
             <FiX />
           </button>
