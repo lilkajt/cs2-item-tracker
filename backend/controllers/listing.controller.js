@@ -133,14 +133,14 @@ export const getItem = async (req, res, next) => {
 export const updateItem = async (req, res, next) => {
     const itemId = req.params.id;
     if (!validateItemId(itemId, next)) return;
+    const updateData = {};
+    const { itemName, buyPrice, buyDate, soldDate, soldPrice, imageUrl} = req.body;
     try {
         const existingItem = await Item.findOne(
             {_id: itemId, userId: req.user.id, isDeleted: false},
             {buyDate: 1, soldDate: 1}
         );
         if (!existingItem) return next(errorHandler(404, "Poof! That item’s gone — or maybe it was never yours to begin with."));
-        const updateData = {};
-        const { itemName, buyPrice, buyDate, soldDate, soldPrice, imageUrl} = req.body;
 
         if (itemName !== undefined) {
             const trimItem = itemName.trim();
@@ -149,7 +149,7 @@ export const updateItem = async (req, res, next) => {
             }
             updateData.itemName = trimItem;
         }
-        if ( imageUrl !== undefined) {
+        if ( imageUrl !== undefined && imageUrl !== "") {
             const trimImage = imageUrl.trim();
             if (!itemUrlRegex.test(trimImage)) {
                 return next(errorHandler(400, "Item image url must be valid syntax."));
