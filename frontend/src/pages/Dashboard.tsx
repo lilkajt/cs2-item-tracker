@@ -8,35 +8,16 @@ import ModalItem from '@/components/ModalItem';
 import Table from '@/components/Table';
 import useItemStore, { Item } from '@/store/useItemStore';
 import axios from 'axios';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import { toast } from 'sonner';
 
-// Średni zwrot z inwestycji (ROI) dla sprzedanych przedmiotów
-// Średnia cena zakupu vs. średnia cena sprzedaży
-// Najwięcej zarobionych pieniędzy na pojedynczym przedmiocie w całej historii
-// Łączna liczba transakcji w danym okresie
-
-const monthlyData = [
-  { name: 'Jan', value: 45 },
-  { name: 'Feb', value: 62 },
-  { name: 'Mar', value: 28 },
-  { name: 'Apr', value: 50 },
-  { name: 'May', value: 75 },
-  { name: 'Jun', value: 35 },
-  { name: 'Jan', value: 45 },
-  { name: 'Feb', value: 62 },
-  { name: 'Mar', value: 28 },
-  { name: 'Apr', value: 50 },
-  { name: 'May', value: 75 },
-  { name: 'Jun', value: 35 },
-];
 const itemRegex = /^[a-zA-Z0-9! |★壱()-™]+$/;
 const priceRegex = /^-?\d+(\.\d{1,2})?$/;
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
 function Dashboard() {
-  const { items, fetchItems, pagination } = useItemStore();
+  const { items, fetchItems, pagination, fetchStats, stats } = useItemStore();
   const soldItems = items.filter((item) => {return item.soldDate});
   const [open, setOpen] = useState(false);
   const [value, setValues] = useState<Partial<Item>>({});
@@ -49,6 +30,10 @@ function Dashboard() {
     soldDate: '',
     main: ''
   });
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const openModal = () => {
     setOpen(true);
@@ -83,6 +68,7 @@ function Dashboard() {
         toast.success("Item added");
         closeModal();
         fetchItems(pagination.currentPage);
+        fetchStats();
       })
       .catch( error => {
         setErrors( prev => ({
@@ -214,32 +200,32 @@ function Dashboard() {
       </div>
       <div className='flex justify-center flex-row flex-wrap gap-4.5'>
         <Card
-        icon='dollar'
-        title='Total revenue'
-        amount='$45,231.89'
-        subtitle='+20.1% from last month'
-        ></Card>
+          icon='dollar'
+          title='Total Revenue'
+          amount={stats ? `${parseFloat(stats.averagePrices.sell) * soldItems.length}c` : 'Loading...'}
+          subtitle={`Average ROI: ${stats?.averageROI || '0%'}`}
+        />
         <Card
-        icon='chart'
-        title='Profits'
-        amount='$24,040.11'
-        subtitle='-11% from last month'
-        ></Card>
+          icon='chart'
+          title='Avg Price Comparison'
+          amount={stats ? `${stats.averagePrices.buy}c → ${stats.averagePrices.sell}c` : 'Loading...'}
+          subtitle='Purchase vs. Selling'
+        />
         <Card
-        icon='card'
-        title='Sales'
-        amount='+32'
-        subtitle='-24% from last month'
-        ></Card>
+          icon='card'
+          title='Highest Profit Item'
+          amount={stats?.highestProfitItem ? `${stats.highestProfitItem.profit}c` : '0c'}
+          subtitle={stats?.highestProfitItem ? stats.highestProfitItem.itemName : 'No items sold yet'}
+        />
         <Card
-        icon='monitor'
-        title='Active now'
-        amount='4'
-        subtitle='+0% from last month'
-        ></Card>
+          icon='monitor'
+          title='Items Purchased This Month'
+          amount={stats ? `${stats.itemsPurchasedThisMonth}` : '0'}
+          subtitle='Purchased current month'
+        />
       </div>
       <div className='w-full flex flex-col gap-5 items-center'>
-        <BarChart data={monthlyData}></BarChart>
+        <BarChart data={stats?.monthlyData || []}></BarChart>
         <Table items={soldItems}></Table>
       </div>
       <div className='w-full'>
