@@ -48,21 +48,30 @@ type ItemState = {
   error: string | null
   stats: ItemStats | null
   pagination: Pagination
+  loadingItems: boolean
+  loadingStats: boolean
+  lastItemsFetch: number
+  lastStatsFetch: number
   serverResponse: ServerResponse | null
   fetchItems: (page?: number, limit?: number) => Promise<void>
   fetchStats: () => Promise<void>
   updateItem: (id: string, updatedItem: Partial<Item>) => Promise<void>
   deleteItem: (id: string) => Promise<void>
   clearServerResponse: () => void
+  refreshData: (page?: number) => Promise<void>
 }
 
 const API_URL = '/api/item';
 
-const useItemStore = create<ItemState>((set) => ({
+const useItemStore = create<ItemState>((set, get) => ({
   items: [],
   loading: false,
   error: null,
   stats: null,
+  loadingItems: false,
+  loadingStats: false,
+  lastItemsFetch: 0,
+  lastStatsFetch: 0,
   serverResponse: null,
   pagination: {
     totalItems: 0,
@@ -73,37 +82,73 @@ const useItemStore = create<ItemState>((set) => ({
     hasPrevPage: false
   },
   
+  refreshData: async (page = get().pagination.currentPage || 1) => {
+    try {
+      await Promise.all([
+        get().fetchItems(page),
+        get().fetchStats()
+      ]);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    }
+  },
+
   fetchItems: async (page = 1, limit = 10) => {
-    set({ loading: true, error: null })
+    if (get().loadingItems) return;
+    const now = Date.now();
+    if (now - get().lastItemsFetch < 1000 && get().items.length > 0) {
+      return;
+    }
+    set({ loadingItems: true, error: null })
     await axios.get(`${API_URL}?page=${page}&limit=${limit}`)
     .then( response => {
-      set({ items: response.data.items, pagination:response.data.pagination, loading: false });
+      set({
+        items: response.data.items,
+        pagination: response.data.pagination,
+        lastItemsFetch: now
+      });
     })
     .catch( error => {
-      set({ loading: false, error: error.response.data.message })
+      set({
+        error: error.response.data.message
+      })
+    })
+    .finally( () => {
+      set({
+        loadingItems: false
+      })
     });
   },
 
   fetchStats: async () => {
-    set({ loading: true, error: null });
+    if (get().loadingStats) return;
+    const now = Date.now();
+    if (now - get().lastStatsFetch < 1000 && get().stats) {
+      return; // Skip if fetched less than 1 second ago
+    }
+    set({ loadingStats: true, error: null });
     await axios.get(`${API_URL}/stats`)
-      .then(response => {
-        set({ stats: response.data.stats, loading: false });
-      })
-      .catch(error => {
-        set({ 
-          loading: false, 
-          error: error.response?.data?.message || 'Failed to load statistics'
-        });
+    .then(response => {
+      set({
+        stats: response.data.stats,
+        lastStatsFetch: now
       });
+    })
+    .catch(error => {
+      set({ 
+        error: error.response?.data?.message || 'Failed to load statistics'
+      });
+    })
+    .finally( () => {
+      set({loadingStats: false});
+    });
   },
 
   updateItem: async (id, updatedItem) => {
-    set({ loading: true, error: null, serverResponse: null })
+    set({ error: null, serverResponse: null })
     await axios.put(`${API_URL}/update/${id}`, updatedItem)
     .then( response => {
       set({
-        loading: false,
         serverResponse: {
           success: response.data.success,
           message: response.data.message || "Item updated successfully"
@@ -113,7 +158,6 @@ const useItemStore = create<ItemState>((set) => ({
     .catch( error => {
       set({
         error: error.response.data.message || "Failed to update item",
-        loading: false,
         serverResponse: {
           success: false,
           message: error.response.data.message
@@ -123,11 +167,9 @@ const useItemStore = create<ItemState>((set) => ({
   },
   
   deleteItem: async (id) => {
-    set({ loading: true, error: null })
     await axios.delete(`${API_URL}/delete/${id}`)
     .then( response => {
       set({
-        loading: false,
         serverResponse: {
           success: response.data.success,
           message: response.data.message || "Item deleted successfully"
@@ -137,7 +179,6 @@ const useItemStore = create<ItemState>((set) => ({
     .catch( error => {
       set({
         error: error.response.data.message || "Failed to delete item",
-        loading: false,
         serverResponse: {
           success: false,
           message: error.response.data.message
