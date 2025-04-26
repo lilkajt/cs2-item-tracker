@@ -15,7 +15,7 @@ const priceRegex = /^-?\d+(\.\d{1,2})?$/;
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
 function EditTable() {
-    const {items, pagination, fetchItems, deleteItem, updateItem, serverResponse, clearServerResponse} = useItemStore();
+    const {items, pagination, fetchItems, deleteItem, updateItem, serverResponse, fetchStats, clearServerResponse} = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
     const [processing, setIsProcessing] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
@@ -84,6 +84,7 @@ function EditTable() {
         setIsProcessing(true);
         await deleteItem(id);
         fetchItems(currentPage);
+        fetchStats();
         setIsProcessing(false);
     };
 
@@ -195,14 +196,15 @@ function EditTable() {
         return isValid;
     };
     
-    const handleSave = (e: React.FormEvent) => {
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedItem) return;
         
         if (validateData(editedItem)) {
             setIsProcessing(true);
-            updateItem(selectedItem._id, editedItem).then(() => {
+            await updateItem(selectedItem._id, editedItem).then(() => {
                 fetchItems(currentPage);
+                fetchStats();
                 closeModal();
                 setIsProcessing(false);
             });
