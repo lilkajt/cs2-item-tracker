@@ -17,7 +17,7 @@ const priceRegex = /^-?\d+(\.\d{1,2})?$/;
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
 function Dashboard() {
-  const { items, fetchItems, pagination, fetchStats, stats } = useItemStore();
+  const { items, fetchStats, stats, refreshData } = useItemStore();
   const soldItems = items.filter((item) => {return item.soldDate});
   const [open, setOpen] = useState(false);
   const [value, setValues] = useState<Partial<Item>>({});
@@ -34,7 +34,7 @@ function Dashboard() {
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
-
+  
   const openModal = () => {
     setOpen(true);
   };
@@ -64,11 +64,10 @@ function Dashboard() {
     e.preventDefault();
     if (validateData(value)){
       await axios.post('/api/item/create', value)
-      .then( () => {
+      .then( async () => {
         toast.success("Item added");
         closeModal();
-        fetchItems(pagination.currentPage);
-        fetchStats();
+        await refreshData();
       })
       .catch( error => {
         setErrors( prev => ({
