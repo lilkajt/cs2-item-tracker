@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { round10 } from '@/utils/decimalAdjust';
 import {
   BarChart as RechartsBarChart,
@@ -25,15 +25,19 @@ function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null | undefined>(null);
   const [disable, setDisable] = useState(false);
   const barColor = "#D9C9C5"; 
-  const { hasNegativeValues, minValue, maxValue } = useMemo(() => {
-    let emptyValues = 0;
-    for (const element of data) {
-      if (element.value == 0) emptyValues += 1;
+  const { hasNegativeValues, minValue, maxValue, isEmpty } = useMemo(() => {
+    const isEmpty = !data ||
+    data.length === 0 ||
+    data.every(item => item.value == 0 );
+
+    if (isEmpty) {
+      return {
+        hasNegativeValues:false,
+        minValue: 0,
+        maxValue: 0,
+        isEmpty: true
+      };
     }
-    if (!data || data.length === 0 || emptyValues == data.length) {
-      setDisable(true);
-    }
-    
     const values = data.map(item => Number(item.value));
     const min = Math.min(...values);
     const max = Math.max(...values);
@@ -41,10 +45,15 @@ function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
     return {
       hasNegativeValues: min < 0,
       minValue: min,
-      maxValue: max
+      maxValue: max,
+      isEmpty: false
     };
   }, [data]);
   
+  useEffect( () => {
+    setDisable(isEmpty);
+  }, [isEmpty]);
+
   return (
     <div className="w-full max-w-[720px] bg-green-500 rounded-xl outline-2 outline-green-300 inline-flex flex-col justify-start items-start">
       <div className="self-stretch h-16 p-6 flex flex-col justify-center">
