@@ -42,7 +42,7 @@ const Card: React.FC<CardProps> = ({ icon, title, amount, subtitle }) => {
             </div>
         </div>
         <div className="self-stretch px-6 pb-6 flex flex-col items-start">
-            <div className="w-32 h-7 text-beige-100 text-2xl font-bold font-display2 leading-loose mb-1.5">{amount}</div>
+            <div className="w-full h-7 text-beige-100 text-2xl font-bold font-display2 leading-loose mb-1.5">{amount}</div>
             <div className="text-midnight text-xs font-medium leading-none">{subtitle}</div>
         </div>
     </div>
