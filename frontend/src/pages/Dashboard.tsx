@@ -19,6 +19,11 @@ const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0
 function Dashboard() {
   const { items, fetchStats, stats, refreshData } = useItemStore();
   const soldItems = items.filter((item) => {return item.soldDate});
+  
+  const recentSoldItems = [...soldItems]
+    .sort((a, b) => (b.soldDate || 0) - (a.soldDate || 0))
+    .slice(0, 5);
+    
   const [open, setOpen] = useState(false);
   const [value, setValues] = useState<Partial<Item>>({});
   const [errors, setErrors] = useState({
@@ -197,39 +202,45 @@ function Dashboard() {
       <div className='text-7xl mb-5 text-green-300 cursor-pointer hover:text-green-100' onClick={openModal}>
       <FiPlusCircle />
       </div>
-      <div className='flex justify-center flex-row flex-wrap gap-4.5'>
-        <Card
-          icon='dollar'
-          title='Total Revenue'
-          amount={stats ? `${parseFloat(stats.averagePrices.sell) * soldItems.length}c` : 'Loading...'}
-          subtitle={`Average ROI: ${stats?.averageROI || '0%'}`}
-        />
-        <Card
-          icon='chart'
-          title='Avg Price Comparison'
-          amount={stats ? `${stats.averagePrices.buy}c → ${stats.averagePrices.sell}c` : 'Loading...'}
-          subtitle='Purchase vs. Selling'
-        />
-        <Card
-          icon='card'
-          title='Highest Profit Item'
-          amount={stats?.highestProfitItem ? `${stats.highestProfitItem.profit}c` : '0c'}
-          subtitle={stats?.highestProfitItem ? stats.highestProfitItem.itemName : 'No items sold yet'}
-        />
-        <Card
-          icon='monitor'
-          title='Items Purchased This Month'
-          amount={stats ? `${stats.itemsPurchasedThisMonth}` : '0'}
-          subtitle='Purchased current month'
-        />
-      </div>
-      <div className='w-full flex flex-col gap-5 items-center'>
-        <BarChart data={stats?.monthlyData || []}></BarChart>
-        <Table items={soldItems}></Table>
-      </div>
-      <div className='w-full'>
-        <EditTable/>
-      </div>
+      { stats ? (
+        <>
+          <div className='flex justify-center flex-row flex-wrap gap-4.5'>
+            <Card
+              icon='dollar'
+              title='Total Revenue'
+              amount={`${parseFloat(stats.averagePrices.sell) * soldItems.length}c`}
+              subtitle={`Average ROI: ${stats.averageROI}`}
+            />
+            <Card
+              icon='chart'
+              title='Avg Price Comparison'
+              amount={`${stats.averagePrices.buy}c → ${stats.averagePrices.sell}c`}
+              subtitle='Purchase vs. Selling'
+            />
+            <Card
+              icon='card'
+              title='Highest Profit Item'
+              amount={ stats?.highestProfitItem ? `${Number(stats.highestProfitItem.profit).toFixed(2)}c` : '0c'}
+              subtitle={stats?.highestProfitItem ? stats.highestProfitItem.itemName : 'No items sold yet'}
+            />
+            <Card
+              icon='monitor'
+              title='Items Purchased This Month'
+              amount={`${stats.itemsPurchasedThisMonth}`}
+              subtitle='Purchased current month'
+            />
+          </div>
+          <div className='w-full flex flex-col gap-5 items-center'>
+            <BarChart data={stats?.monthlyData || []}></BarChart>
+            <Table items={recentSoldItems} title="Recent sales"></Table>
+          </div>
+          <div className='w-full'>
+            <EditTable/>
+          </div>
+        </>
+      ): (
+        <div className='text-beige-100 text-3xl text-center my-10'>Loading statistics...</div>
+      )}
     </div>
     <ModalItem open={open} onClose={closeModal}>
       <div className="grid grid-flow-row grid-cols-2 justify-center items-center mx-5 my-25 gap-9">

@@ -41,7 +41,7 @@ export const createItem = async (req, res, next) => {
         finalSoldPrice = 0;
     }
     if (finalSoldPrice && !finalSoldDate) {
-        finalSoldDate = Math.floor(Date.now() / 1000);
+        finalSoldDate = Date.now();
     }
     if (finalSoldDate && Math.abs(parseInt(finalSoldDate)) < Math.abs(parseInt(buyDate))) {
         return next(errorHandler(400, "The sold date can't be earlier than the buy date. Please double-check your dates."));
@@ -161,10 +161,10 @@ export const getItemStats = async (req, res, next) => {
         soldItems.forEach(item => {
             const profit = item.soldPrice - item.buyPrice;
             if (profit > highestProfit) {
-                highestProfit = profit.toFixed(2);
+                highestProfit = profit;
                 highestProfitItem = {
                     itemName: item.itemName,
-                    profit: profit
+                    profit: profit.toFixed(2)
                 }
             };
         });
@@ -299,10 +299,10 @@ export const deleteItem = async (req, res, next) => {
     try {
         const updatedItem = await Item.findOneAndUpdate(
             {_id: itemId, userId: req.user.id, isDeleted: false},
-            {isDeleted: true, deletedAt: Math.floor(Date.now() / 1000)},
+            {isDeleted: true, deletedAt: Date.now()},
             { new: true}
         );
-        if (!updatedItem) return next(errorHandler(404, "Poof! That item’s gone — or maybe it was never yours to begin with."));
+        if (!updatedItem) return next(errorHandler(404, "Poof! That item's gone — or maybe it was never yours to begin with."));
         res.status(200).json({
             success: true,
             message: "Item deleted!" 
