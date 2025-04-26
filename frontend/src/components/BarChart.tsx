@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { round10 } from '@/utils/decimalAdjust';
 import {
   BarChart as RechartsBarChart,
   Bar,
@@ -6,23 +7,38 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  ReferenceLine
 } from 'recharts';
 
-interface DataPoint {
-  name: string;
-  value: number;
-}
+type ChartDataPoint = {
+  name: string,
+  value: number
+};
 
 interface BarChartProps {
-  data?: DataPoint[];
+  data?: ChartDataPoint[];
   title?: string;
-}
+};
 
-function BarChart({ data, title = 'Overview' }: BarChartProps) {
+function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null | undefined>(null);
-  
   const barColor = "#D9C9C5"; 
+  const { hasNegativeValues, minValue, maxValue } = useMemo(() => {
+    if (!data || data.length === 0) {
+      return { hasNegativeValues: false, minValue: 0, maxValue: 0 };
+    }
+    
+    const values = data.map(item => Number(item.value));
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    
+    return {
+      hasNegativeValues: min < 0,
+      minValue: min,
+      maxValue: max
+    };
+  }, [data]);
   
   return (
     <div className="w-full max-w-[720px] bg-green-500 rounded-xl outline-2 outline-green-300 inline-flex flex-col justify-start items-start">
@@ -59,7 +75,14 @@ function BarChart({ data, title = 'Overview' }: BarChartProps) {
               tick={{ fill: '#D9C9C5', fontSize: 12, fontFamily: 'Satoshi' }}
               tickFormatter={(value) => `${value}c`}
               width={40}
+              domain={[
+                hasNegativeValues ? round10(minValue * 1.1,2) : 0,
+                maxValue > 0 ? round10(maxValue * 1.1, 2) : 10
+              ]}
             />
+            {hasNegativeValues && (
+              <ReferenceLine y={0} stroke="#62C7AB" strokeWidth={2} />
+            )}
             <Tooltip 
               cursor={{ fill: '#253140' }}
               contentStyle={{ backgroundColor: '#253140', border: '1px solid #62C7AB', borderRadius: '8px' }}
