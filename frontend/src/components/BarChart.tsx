@@ -23,10 +23,15 @@ interface BarChartProps {
 
 function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null | undefined>(null);
+  const [disable, setDisable] = useState(false);
   const barColor = "#D9C9C5"; 
   const { hasNegativeValues, minValue, maxValue } = useMemo(() => {
-    if (!data || data.length === 0) {
-      return { hasNegativeValues: false, minValue: 0, maxValue: 0 };
+    let emptyValues = 0;
+    for (const element of data) {
+      if (element.value == 0) emptyValues += 1;
+    }
+    if (!data || data.length === 0 || emptyValues == data.length) {
+      setDisable(true);
     }
     
     const values = data.map(item => Number(item.value));
@@ -45,60 +50,66 @@ function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
       <div className="self-stretch h-16 p-6 flex flex-col justify-center">
           <div className="text-start text-beige-100 text-xl font-bold leading-normal">{title}</div>
       </div>
-      <div className="w-full h-96 px-2 sm:px-6 pb-6">
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsBarChart
-            data={data}
-            margin={{
-              top: 20,
-              right: 10,
-              left: 0,
-              bottom: 5,
-            }}
-            onMouseMove={(state) => {
-              if (state.isTooltipActive) {
-                setActiveIndex(state.activeTooltipIndex);
-              } else {
-                setActiveIndex(null);
-              }
-            }}
-            onMouseLeave={() => setActiveIndex(null)}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#253140" vertical={false} />
-            <XAxis 
-              dataKey="name" 
-              tick={{ fill: '#D9C9C5', fontSize: 12, fontFamily: 'Satoshi' }}
-              tickMargin={5}
-              interval="preserveStartEnd"
-            />
-            <YAxis 
-              tick={{ fill: '#D9C9C5', fontSize: 12, fontFamily: 'Satoshi' }}
-              tickFormatter={(value) => `${value}c`}
-              width={40}
-              domain={[
-                hasNegativeValues ? round10(minValue * 1.1,2) : 0,
-                maxValue > 0 ? round10(maxValue * 1.1, 2) : 10
-              ]}
-            />
-            {hasNegativeValues && (
-              <ReferenceLine y={0} stroke="#62C7AB" strokeWidth={2} />
-            )}
-            <Tooltip 
-              cursor={{ fill: '#253140' }}
-              contentStyle={{ backgroundColor: '#253140', border: '1px solid #62C7AB', borderRadius: '8px' }}
-              labelStyle={{ color: '#D9C9C5' }}
-              itemStyle={{ color: '#D9C9C5' }}
-              formatter={(value) => [value, 'coins']}
-            />
-            <Bar 
-              dataKey="value" 
-              fill={barColor}
-              radius={[4, 4, 0, 0]}
-              barSize={30}
-            />
-          </RechartsBarChart>
-        </ResponsiveContainer>
-      </div>
+      { disable ? (
+        <div className='w-full h-full flex text-4xl mb-10 text-beige-100 justify-center items-center'>No monthly sales data</div>
+      ) : (
+        <div className="w-full h-96 px-2 sm:px-6 pb-6">
+          <ResponsiveContainer width="100%" height="100%">
+            <RechartsBarChart
+              data={data}
+              margin={{
+                top: 20,
+                right: 10,
+                left: 0,
+                bottom: 5,
+              }}
+              onMouseMove={(state) => {
+                if (state.isTooltipActive) {
+                  setActiveIndex(state.activeTooltipIndex);
+                } else {
+                  setActiveIndex(null);
+                }
+              }}
+              onMouseLeave={() => setActiveIndex(null)}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#253140" vertical={false} />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fill: '#D9C9C5', fontSize: 12, fontFamily: 'Satoshi' }}
+                tickMargin={5}
+                interval="preserveStartEnd"
+                stroke='#253140'
+              />
+              <YAxis 
+                tick={{ fill: '#D9C9C5', fontSize: 12, fontFamily: 'Satoshi' }}
+                tickFormatter={(value) => `${value}c`}
+                width={40}
+                domain={[
+                  hasNegativeValues ? round10(minValue * 1.1,2) : 0,
+                  maxValue > 0 ? round10(maxValue * 1.1, 2) : 10
+                ]}
+                stroke='#253140'
+              />
+              {hasNegativeValues && (
+                <ReferenceLine y={0} stroke="#62C7AB" strokeWidth={2} />
+              )}
+              <Tooltip 
+                cursor={{ fill: '#253140' }}
+                contentStyle={{ backgroundColor: '#253140', border: '1px solid #62C7AB', borderRadius: '8px' }}
+                labelStyle={{ color: '#D9C9C5' }}
+                itemStyle={{ color: '#D9C9C5' }}
+                formatter={(value) => [value, 'coins']}
+              />
+              <Bar 
+                dataKey="value" 
+                fill={barColor}
+                radius={[4, 4, 0, 0]}
+                barSize={30}
+              />
+            </RechartsBarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 }
