@@ -38,7 +38,7 @@ export type ItemStats = {
   itemsPurchasedThisMonth: number,
   monthlyData: Array<{
     name: string,
-    value: number
+    value: string
   }>
 }
 

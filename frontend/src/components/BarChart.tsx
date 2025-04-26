@@ -13,7 +13,7 @@ import {
 
 type ChartDataPoint = {
   name: string,
-  value: number
+  value: string
 };
 
 interface BarChartProps {
@@ -28,7 +28,7 @@ function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
   const { hasNegativeValues, minValue, maxValue, isEmpty } = useMemo(() => {
     const isEmpty = !data ||
     data.length === 0 ||
-    data.every(item => item.value == 0 );
+    data.every(item => parseFloat(item.value) == 0 );
 
     if (isEmpty) {
       return {
