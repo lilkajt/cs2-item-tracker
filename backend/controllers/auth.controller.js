@@ -87,3 +87,7 @@ export const logout = async (req, res, next) => {
         next(error);
     }
 }
+
+export const verify = async (req, res) => {
+    res.status(200).json({ success: true });
+}
