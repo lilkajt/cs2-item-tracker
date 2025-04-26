@@ -15,7 +15,17 @@ const priceRegex = /^-?\d+(\.\d{1,2})?$/;
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
 function EditTable() {
-    const {items, pagination, fetchItems, deleteItem, updateItem, serverResponse, fetchStats, clearServerResponse} = useItemStore();
+    const {
+        items, 
+        pagination, 
+        fetchItems, 
+        deleteItem, 
+        updateItem, 
+        serverResponse, 
+        clearServerResponse,
+        refreshData,
+        loadingItems
+    } = useItemStore();
     const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
     const [processing, setIsProcessing] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
@@ -83,8 +93,7 @@ function EditTable() {
     const handleDelete = async (id: string) => {
         setIsProcessing(true);
         await deleteItem(id);
-        fetchItems(currentPage);
-        fetchStats();
+        await refreshData(currentPage);
         setIsProcessing(false);
     };
 
@@ -202,9 +211,8 @@ function EditTable() {
         
         if (validateData(editedItem)) {
             setIsProcessing(true);
-            await updateItem(selectedItem._id, editedItem).then(() => {
-                fetchItems(currentPage);
-                fetchStats();
+            await updateItem(selectedItem._id, editedItem).then( async() => {
+                await refreshData(currentPage);
                 closeModal();
                 setIsProcessing(false);
             });
@@ -219,8 +227,10 @@ function EditTable() {
                         <div>
                             Edit Items
                         </div>
-                        {processing && (
-                            <div className="text-beige-100">Processing...</div>
+                        {processing || loadingItems && (
+                            <div className="text-beige-100">
+                                { processing ? "Processing..." : "Loading items..."}
+                            </div>
                         )}
                     </div>
                 </div>
