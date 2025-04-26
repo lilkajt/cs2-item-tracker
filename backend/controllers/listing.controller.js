@@ -130,6 +130,95 @@ export const getItem = async (req, res, next) => {
     }
 };
 
+export const getItemStats = async (req, res, next) => {
+    if (!req.user.id) return next(errorHandler(400, "Something went wrong verifying your account. Please log in again."));
+    const userId = req.user.id;
+    try {
+        const items = await Item.find({
+            userId: userId,
+            isDeleted: false
+        });
+        if (!items) return next(errorHandler());
+        const soldItems = items.filter(item => item.soldDate && item.soldPrice !== null);
+      
+        // average ROI
+        let totalROI = 0;
+        soldItems.forEach(item => {
+            const roi = (item.soldPrice - item.buyPrice) / item.buyPrice * 100;
+            totalROI += roi;
+        });
+        const averageROI = soldItems.length > 0 ? (totalROI / soldItems.length).toFixed(2) : 0;
+      
+        // average buy and sell prices
+        const totalBuyPrice = soldItems.reduce((sum, item) => sum + item.buyPrice, 0);
+        const totalSellPrice = soldItems.reduce((sum, item) => sum + item.soldPrice, 0);
+        const avgBuyPrice = soldItems.length > 0 ? (totalBuyPrice / soldItems.length).toFixed(2) : 0;
+        const avgSellPrice = soldItems.length > 0 ? (totalSellPrice / soldItems.length).toFixed(2) : 0;
+      
+        // highest profit item
+        let highestProfit = 0;
+        let highestProfitItem = null;
+        soldItems.forEach(item => {
+            const profit = item.soldPrice - item.buyPrice;
+            if (profit > highestProfit) {
+                highestProfit = profit.toFixed(2);
+                highestProfitItem = {
+                    itemName: item.itemName,
+                    profit: profit
+                }
+            };
+        });
+      
+        // items purchased in current month
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime();
+        
+        const itemsThisMonth = items.filter(item => {
+            return item.buyDate >= startOfMonth && item.buyDate <= endOfMonth;
+        }).length;
+      
+        // monthly sales data (starting from current year)
+        const startYear = now.getFullYear();
+        const monthlyData = [];
+
+        for (let month = 0; month < 12; month++) {
+            if (month > now.getMonth()) continue;
+            // name of month (Jun) : value (coins - profit/loss)
+            const monthStart = new Date(startYear, month, 1).getTime();
+            const monthEnd = new Date(startYear, month + 1, 0, 23, 59, 59, 999).getTime();
+            
+            const monthlySales = soldItems.filter(item => 
+                item.soldDate >= monthStart && item.soldDate <= monthEnd
+            );
+            
+            const monthlyProfit = monthlySales.reduce((sum, item) => sum + (item.soldPrice - item.buyPrice), 0);
+            
+            monthlyData.push({
+                name: new Date(startYear, month, 1).toLocaleString('default', { month: 'long' }),
+                value: monthlyProfit.toFixed(2)
+            });
+        }
+        
+        res.status(200).json({
+            success: true,
+            stats: {
+                averageROI: `${averageROI}%`,
+                averagePrices: {
+                    buy: avgBuyPrice,
+                    sell: avgSellPrice
+                },
+                highestProfitItem,
+                itemsPurchasedThisMonth: itemsThisMonth,
+                monthlyData
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 export const updateItem = async (req, res, next) => {
     const itemId = req.params.id;
     if (!validateItemId(itemId, next)) return;
