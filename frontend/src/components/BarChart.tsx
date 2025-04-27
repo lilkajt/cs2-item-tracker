@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from 'recharts';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 type ChartDataPoint = {
   name: string,
@@ -17,28 +18,35 @@ type ChartDataPoint = {
 };
 
 interface BarChartProps {
-  data?: ChartDataPoint[];
+  data?: {
+    [year: string]: Array<ChartDataPoint>;
+  };
   title?: string;
 };
 
-function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
+function BarChart({ data = {}, title = 'Overview' }: BarChartProps) {
+  const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const [activeIndex, setActiveIndex] = useState<number | null | undefined>(null);
   const [disable, setDisable] = useState(false);
   const barColor = "#D9C9C5"; 
-  const { hasNegativeValues, minValue, maxValue, isEmpty } = useMemo(() => {
-    const isEmpty = !data ||
-    data.length === 0 ||
-    data.every(item => parseFloat(item.value) == 0 );
+  
+  const years = useMemo(() => {
+    return Object.keys(data).sort((a, b) => parseInt(b) - parseInt(a));
+  }, [data]);
 
-    if (isEmpty) {
+  const { hasNegativeValues, minValue, maxValue, isEmpty } = useMemo(() => {
+    if (!data || !data[selectedYear] || data[selectedYear].length === 0 || 
+        data[selectedYear].every(item => parseFloat(item.value) == 0)) {
       return {
-        hasNegativeValues:false,
+        hasNegativeValues: false,
         minValue: 0,
         maxValue: 0,
         isEmpty: true
       };
     }
-    const values = data.map(item => Number(item.value));
+    
+    const values = data[selectedYear].map(item => Number(item.value));
     const min = Math.min(...values);
     const max = Math.max(...values);
     
@@ -48,24 +56,58 @@ function BarChart({ data= [], title = 'Overview' }: BarChartProps) {
       maxValue: max,
       isEmpty: false
     };
-  }, [data]);
+  }, [data, selectedYear]);
   
-  useEffect( () => {
+  useEffect(() => {
     setDisable(isEmpty);
   }, [isEmpty]);
 
+  const handlePrevYear = () => {
+    const currentIndex = years.indexOf(selectedYear.toString());
+    if (currentIndex < years.length - 1) {
+      setSelectedYear(parseInt(years[currentIndex + 1]));
+    }
+  };
+
+  const handleNextYear = () => {
+    const currentIndex = years.indexOf(selectedYear.toString());
+    if (currentIndex > 0) {
+      setSelectedYear(parseInt(years[currentIndex - 1]));
+    }
+  };
+
+  const hasPrevYear = years.indexOf(selectedYear.toString()) < years.length - 1;
+  const hasNextYear = years.indexOf(selectedYear.toString()) > 0;
+
   return (
     <div className="w-full max-w-[720px] bg-green-500 rounded-xl outline-2 outline-green-300 inline-flex flex-col justify-start items-start">
-      <div className="self-stretch h-16 p-6 flex flex-col justify-center">
-          <div className="text-start text-beige-100 text-xl font-bold leading-normal">{title}</div>
+      <div className="self-stretch p-6 flex flex-row justify-between items-center">
+        <div className="text-start text-beige-100 text-xl font-bold leading-normal">{title}</div>
+        <div className="flex items-center">
+          <button 
+            onClick={handlePrevYear}
+            disabled={!hasPrevYear}
+            className={`text-beige-100 mr-2 p-1 rounded hover:bg-midnight ${!hasPrevYear ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          >
+            <FiChevronLeft size={24} />
+          </button>
+          <div className="text-beige-100 text-xl font-bold px-2">{selectedYear}</div>
+          <button 
+            onClick={handleNextYear}
+            disabled={!hasNextYear}
+            className={`text-beige-100 ml-2 p-1 rounded hover:bg-midnight ${!hasNextYear ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          >
+            <FiChevronRight size={24} />
+          </button>
+        </div>
       </div>
       { disable ? (
-        <div className='w-full h-full flex text-4xl mb-10 text-beige-100 justify-center items-center'>No monthly sales data</div>
+        <div className='w-full h-full flex text-4xl mb-10 text-beige-100 justify-center items-center'>No sales data for {selectedYear}</div>
       ) : (
         <div className="w-full h-96 px-2 sm:px-6 pb-6">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsBarChart
-              data={data}
+              data={data[selectedYear]}
               margin={{
                 top: 20,
                 right: 10,
