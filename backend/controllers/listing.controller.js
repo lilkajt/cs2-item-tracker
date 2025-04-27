@@ -230,7 +230,7 @@ export const getItemStats = async (req, res, next) => {
                 const monthlyProfit = monthlySales.reduce((sum, item) => sum + (item.soldPrice - item.buyPrice), 0);
                 
                 yearlyData[year].push({
-                    name: new Date(year, month, 1).toLocaleString('default', { month: 'long' }),
+                    name: new Date(year, month, 1).toLocaleString('default', { month: 'short' }),
                     value: monthlyProfit.toFixed(2)
                 });
             }
