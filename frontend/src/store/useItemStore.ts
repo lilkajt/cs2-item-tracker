@@ -39,10 +39,12 @@ export type ItemStats = {
     profit: string
   } | null,
   itemsPurchasedThisMonth: number,
-  monthlyData: Array<{
-    name: string,
-    value: string
-  }>
+  yearlyData: {
+    [year: string]: Array<{
+      name: string,
+      value: string
+    }>
+  }
 }
 
 type ItemState = {
