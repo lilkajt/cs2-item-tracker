@@ -8,7 +8,7 @@ import ModalItem from '@/components/ModalItem';
 import Table from '@/components/Table';
 import useItemStore, { Item } from '@/store/useItemStore';
 import axios from 'axios';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import { toast } from 'sonner';
 
@@ -17,13 +17,8 @@ const priceRegex = /^-?\d+(\.\d{1,2})?$/;
 const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
 function Dashboard() {
-  const { items, fetchStats, stats, refreshData } = useItemStore();
-  const soldItems = items.filter((item) => {return item.soldDate});
+  const { fetchStats, stats, refreshData, fetchAllItems, allItems } = useItemStore();
   
-  const recentSoldItems = [...soldItems]
-    .sort((a, b) => (b.soldDate || 0) - (a.soldDate || 0))
-    .slice(0, 5);
-    
   const [open, setOpen] = useState(false);
   const [value, setValues] = useState<Partial<Item>>({});
   const [errors, setErrors] = useState({
@@ -36,9 +31,23 @@ function Dashboard() {
     main: ''
   });
 
+  const recentSales = useMemo(() => {
+    const soldItems = allItems.filter(item => 
+      item.soldDate !== null && 
+      item.soldPrice !== null
+    );
+    
+    const sortedItems = soldItems.sort((a, b) => 
+      (b.soldDate || 0) - (a.soldDate || 0)
+    );
+    
+    return sortedItems.slice(0, 5);
+  }, [allItems]);
+
   useEffect(() => {
+    fetchAllItems();
     fetchStats();
-  }, [fetchStats]);
+  }, [fetchAllItems, fetchStats]);
   
   const openModal = () => {
     setOpen(true);
@@ -69,10 +78,14 @@ function Dashboard() {
     e.preventDefault();
     if (validateData(value)){
       await axios.post('/api/item/create', value)
-      .then( async () => {
+      .then( async (response) => {
         toast.success("Item added");
         closeModal();
-        await refreshData();
+        if (response.data && response.data.item) {
+          useItemStore.getState().addItem(response.data.item);
+        } else {
+          await refreshData();
+        }
       })
       .catch( error => {
         setErrors( prev => ({
@@ -208,7 +221,7 @@ function Dashboard() {
             <Card
               icon='dollar'
               title='Total Revenue'
-              amount={`${parseFloat(stats.averagePrices.sell) * soldItems.length}c`}
+              amount={`${(parseFloat(stats.averagePrices.sell) * allItems.length).toFixed(2) }c`}
               subtitle={`Average ROI: ${stats.averageROI}`}
             />
             <Card
@@ -232,7 +245,7 @@ function Dashboard() {
           </div>
           <div className='w-full flex flex-col gap-5 items-center'>
             <BarChart data={stats?.monthlyData || []}></BarChart>
-            <Table items={recentSoldItems} title="Recent sales"></Table>
+            <Table items={recentSales} title="Recent sales"></Table>
           </div>
           <div className='w-full'>
             <EditTable/>
