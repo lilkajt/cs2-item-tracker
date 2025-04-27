@@ -113,6 +113,32 @@ export const getItems = async (req, res, next) => {
     }
 };
 
+export const getAllItems = async (req, res, next) => {
+    if (!req.user.id) return next(errorHandler(400, "Something went wrong verifying your account. Please log in again."));
+    try {
+        const query = {
+            userId: req.user.id,
+            isDeleted: false
+        };
+
+        const items = await Item.find(query)
+        .sort({ buyDate: -1});
+
+        const sanitizedItems = items.map(item => {
+            const { isDeleted, deletedAt, userId, ...itemData } = item._doc;
+            return itemData;
+        });
+        res
+        .status(200)
+        .json({
+            success: true,
+            items: sanitizedItems,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getItem = async (req, res, next) => {
     const itemId = req.params.id;
     if (!validateItemId(itemId, next)) return;
