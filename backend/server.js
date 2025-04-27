@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
-app.use('/api/item', listingRouter);
+app.use('/api/items', listingRouter);
 app.use( (err,req, res, next) => {
     const statusCode = err.statusCode || 500;
     let message = "Whoops, something broke! Try again in a minute.";
