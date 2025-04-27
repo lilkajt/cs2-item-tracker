@@ -244,7 +244,7 @@ function Dashboard() {
             />
           </div>
           <div className='w-full flex flex-col gap-5 items-center'>
-            <BarChart data={stats?.monthlyData || []}></BarChart>
+            <BarChart data={stats?.yearlyData || {}} title="Monthly Profit/Loss"></BarChart>
             <Table items={recentSales} title="Recent sales"></Table>
           </div>
           <div className='w-full'>
