@@ -204,26 +204,36 @@ export const getItemStats = async (req, res, next) => {
             return item.buyDate >= startOfMonth && item.buyDate <= endOfMonth;
         }).length;
       
-        // monthly sales data (starting from current year)
-        const startYear = now.getFullYear();
-        const monthlyData = [];
+        // Get the earliest year from sold items
+        let earliestYear = now.getFullYear();
+        if (soldItems.length > 0) {
+            const earliestDate = Math.min(...soldItems.map(item => item.soldDate));
+            earliestYear = new Date(earliestDate).getFullYear();
+        }
 
-        for (let month = 0; month < 12; month++) {
-            if (month > now.getMonth()) continue;
-            // name of month (Jun) : value (coins - profit/loss)
-            const monthStart = new Date(startYear, month, 1).getTime();
-            const monthEnd = new Date(startYear, month + 1, 0, 23, 59, 59, 999).getTime();
+        // Generate yearly data from earliest year to current year
+        const yearlyData = {};
+        for (let year = earliestYear; year <= now.getFullYear(); year++) {
+            yearlyData[year] = [];
             
-            const monthlySales = soldItems.filter(item => 
-                item.soldDate >= monthStart && item.soldDate <= monthEnd
-            );
-            
-            const monthlyProfit = monthlySales.reduce((sum, item) => sum + (item.soldPrice - item.buyPrice), 0);
-            
-            monthlyData.push({
-                name: new Date(startYear, month, 1).toLocaleString('default', { month: 'long' }),
-                value: monthlyProfit.toFixed(2)
-            });
+            for (let month = 0; month < 12; month++) {
+                // If it's the current year, only include months up to the current month
+                if (year === now.getFullYear() && month > now.getMonth()) continue;
+                
+                const monthStart = new Date(year, month, 1).getTime();
+                const monthEnd = new Date(year, month + 1, 0, 23, 59, 59, 999).getTime();
+                
+                const monthlySales = soldItems.filter(item => 
+                    item.soldDate >= monthStart && item.soldDate <= monthEnd
+                );
+                
+                const monthlyProfit = monthlySales.reduce((sum, item) => sum + (item.soldPrice - item.buyPrice), 0);
+                
+                yearlyData[year].push({
+                    name: new Date(year, month, 1).toLocaleString('default', { month: 'long' }),
+                    value: monthlyProfit.toFixed(2)
+                });
+            }
         }
         
         res.status(200).json({
@@ -236,7 +246,7 @@ export const getItemStats = async (req, res, next) => {
                 },
                 highestProfitItem,
                 itemsPurchasedThisMonth: itemsThisMonth,
-                monthlyData
+                yearlyData
             }
         });
     } catch (error) {
