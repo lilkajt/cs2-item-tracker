@@ -1,6 +1,6 @@
-import useItemStore from "@/store/useItemStore";
+import useItemStore, { SortField, SortDirection } from "@/store/useItemStore";
 import { useState, useEffect } from "react";
-import { FiChevronLeft, FiChevronsLeft, FiChevronRight, FiChevronsRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronsLeft, FiChevronRight, FiChevronsRight, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { Item } from "@/store/useItemStore";
 import { toast } from 'sonner';
 import ModalItem from "./ModalItem";
@@ -16,17 +16,19 @@ const itemUrlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0
 
 function EditTable() {
     const {
-        items, 
-        pagination, 
-        fetchItems, 
-        deleteItem, 
-        updateItem, 
+        displayItems, 
+        pagination,
+        deleteItem,
+        updateItem,
         serverResponse, 
         clearServerResponse,
-        refreshData,
-        loadingItems
+        loadingItems,
+        sortField,
+        sortDirection,
+        setSorting,
+        setPage
     } = useItemStore();
-    const [currentPage, setCurrentPage] = useState(pagination.currentPage || 1);
+    
     const [processing, setIsProcessing] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -40,9 +42,6 @@ function EditTable() {
         soldDate: ''
     });
 
-    useEffect(() => {
-        fetchItems(currentPage);
-    }, [fetchItems, currentPage]);
 
     useEffect(() => {
         if (serverResponse) {
@@ -60,7 +59,15 @@ function EditTable() {
     }, [serverResponse, clearServerResponse]);
 
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
+        setPage(page);
+    };
+
+    const handleSort = (field: SortField) => {
+        if (sortField === field) {
+            setSorting(field, sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSorting(field, 'desc');
+        }
     };
 
     const openEditModal = (item: Item) => {
@@ -93,7 +100,6 @@ function EditTable() {
     const handleDelete = async (id: string) => {
         setIsProcessing(true);
         await deleteItem(id);
-        await refreshData(currentPage);
         setIsProcessing(false);
     };
 
@@ -211,12 +217,17 @@ function EditTable() {
         
         if (validateData(editedItem)) {
             setIsProcessing(true);
-            await updateItem(selectedItem._id, editedItem).then( async() => {
-                await refreshData(currentPage);
-                closeModal();
-                setIsProcessing(false);
-            });
+            await updateItem(selectedItem._id, editedItem);
+            closeModal();
+            setIsProcessing(false);
         }
+    };
+
+    const renderSortIcon = (field: SortField) => {
+        if (sortField !== field) return null;
+        return sortDirection === 'asc' ? 
+            <FiChevronUp className="inline ml-1" /> : 
+            <FiChevronDown className="inline ml-1" />;
     };
 
     return (
@@ -224,8 +235,13 @@ function EditTable() {
             <div className="bg-green-500 outline-2 outline-green-300 text-midnight rounded-2xl">
                 <div className="h-fit w-full flex justify-start">
                     <div className="w-full h-fit px-table-1 pt-table-1 pb-table-2 font-bold text-lg leading-normal">
-                        <div>
-                            Edit Items
+                        <div className="flex justify-between items-center text-3xl">
+                            <div>Edit Items</div>
+                            {sortField && (
+                                <div className="text-sm">
+                                    Sorted by: {sortField} ({sortDirection})
+                                </div>
+                            )}
                         </div>
                         {processing || loadingItems && (
                             <div className="text-beige-100">
@@ -235,14 +251,56 @@ function EditTable() {
                     </div>
                 </div>
                 
-                {items.length > 0 && (
+                {displayItems.length > 0 && (
                     <>
                         <div className="flex w-full flex-col px-table-1 pb-table-1 overflow-clip">
-                            {items.map((item) => (
+                            {/* Table header with sortable columns */}
+                            <div className="grid grid-flow-row grid-cols-2 text-beige-100 gap-4 text-xl pb-table-2 font-bold border-b border-midnight">
+                                <div className="flex justify-start items-center text-midnight">Sort by:</div>
+                                <div></div>
+                                <div
+                                    className="flex justify-start items-center cursor-pointer hover:text-green-100"
+                                    onClick={() => handleSort('buyDate')}
+                                >
+                                    date buy {renderSortIcon('buyDate')}
+                                </div>
+                                <div></div>
+                                <div 
+                                    className="flex justify-start items-center cursor-pointer hover:text-green-100"
+                                    onClick={() => handleSort('buyPrice')}
+                                >
+                                    price buy {renderSortIcon('buyPrice')}
+                                </div>
+                                <div></div>
+                                <div 
+                                    className="flex justify-start items-center cursor-pointer hover:text-green-100"
+                                    onClick={() => handleSort('soldDate')}
+                                >
+                                    date sold {renderSortIcon('soldDate')}
+                                </div>
+                                <div></div>
+                                <div 
+                                    className="flex justify-start items-center cursor-pointer hover:text-green-100"
+                                    onClick={() => handleSort('soldPrice')}
+                                >
+                                    price sold {renderSortIcon('soldPrice')}
+                                </div>
+                                <div></div>
+                                <div 
+                                    className="flex justify-start items-center cursor-pointer hover:text-green-100"
+                                    onClick={() => handleSort('profit')}
+                                >
+                                    profit {renderSortIcon('profit')}
+                                </div>
+                                <div></div>
+                            </div>
+                            
+                            {/* Table content */}
+                            {displayItems.map((item) => (
                                 <div
                                     key={item._id}
                                     data-property="item"
-                                    className="grid grid-flow-row grid-cols-2 text-midnight gap-4 text-xl pb-table-1"
+                                    className="grid grid-flow-row grid-cols-2 text-midnight gap-4 text-xl py-table-2 border-b border-midnight/20"
                                 >
                                     <div className="flex justify-start items-center">image</div>
                                     {item.imageUrl ? (
@@ -261,10 +319,10 @@ function EditTable() {
                                     <div className="flex justify-start items-center">price sold</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{item.soldPrice !== null ? item.soldPrice: 'not sold'}</div>
                                     <div className="flex justify-start items-center">profit</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{ item.soldPrice !== null ? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): "not sold"}</div>
                                     <div className="flex items-center justify-center bg-midnight rounded-2xl mr-3 my-3 cursor-pointer" onClick={() => openEditModal(item)}>
-                                        <div className="py-3 px-3 text-green-300">edit</div>
+                                        <div className="py-3 px-3 text-beige-100">Edit</div>
                                     </div>
                                     <div className="flex items-center justify-center bg-midnight rounded-2xl ml-3 my-3 cursor-pointer" onClick={() => handleDelete(item._id)}>
-                                        <div className="py-3 px-3 text-red">delete</div>
+                                        <div className="py-3 px-3 text-red">Delete</div>
                                     </div>
                                 </div>
                             ))}
@@ -280,17 +338,17 @@ function EditTable() {
                                 <FiChevronsLeft size={64}/>
                             </button>
                             <button
-                                onClick={() => handlePageChange(currentPage-1)}
+                                onClick={() => handlePageChange(pagination.currentPage-1)}
                                 disabled={!pagination.hasPrevPage}
                                 className={`text-beige-100 flex items-center py-1 px-3 ${!pagination.hasPrevPage ? ("cursor-not-allowed text-midnight") : "cursor-pointer"}`}
                             >
                                 <FiChevronLeft size={64}/>
                             </button>
                             <div className="flex text-beige-100 h-full text-5xl select-none">
-                                <div>{currentPage}</div>
+                                <div>{pagination.currentPage}</div>
                             </div>
                             <button
-                                onClick={() => handlePageChange(currentPage+1)}
+                                onClick={() => handlePageChange(pagination.currentPage+1)}
                                 disabled={!pagination.hasNextPage}
                                 className={`text-beige-100 flex items-center py-1 px-3 ${!pagination.hasNextPage ? ("cursor-not-allowed text-midnight") : "cursor-pointer"}`}
                             >
@@ -307,7 +365,7 @@ function EditTable() {
                     </>
                 )}
 
-                {items.length === 0 && (
+                {displayItems.length === 0 && (
                     <div className="flex w-full px-table-1 pb-table-1 text-beige-100 justify-center items-center text-3xl">
                         <div>No items</div>
                     </div>
@@ -315,6 +373,7 @@ function EditTable() {
             </div>
             
             <ModalItem open={modalOpen} onClose={closeModal}>
+                {/* Modal content */}
                 <div className="grid grid-flow-row grid-cols-2 justify-center items-center mx-5 my-25 gap-9">
                     <div className="col-span-2">
                         <div className="flex flex-col justify-center items-center mb-5">
