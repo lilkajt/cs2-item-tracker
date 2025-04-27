@@ -77,7 +77,7 @@ function Dashboard() {
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
     if (validateData(value)){
-      await axios.post('/api/item/create', value)
+      await axios.post('/api/items/create', value)
       .then( async (response) => {
         toast.success("Item added");
         closeModal();
