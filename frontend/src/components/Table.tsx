@@ -9,7 +9,7 @@ interface TableProps {
 
 function Table({ items, title = "Recent Sales" }: TableProps) {
   return (
-    <div data-property-1="sales" className="w-full max-w-[535px] bg-green-500 rounded-xl outline-2 outline-green-300 flex flex-col justify-start items-start overflow-hidden">
+    <div data-property-1="sales" className="w-full max-w-[535px] max-h-[401px] bg-green-500 rounded-xl outline-2 outline-green-300 flex flex-col justify-start items-start overflow-hidden">
         <div className="self-stretch px-4 sm:px-6 pt-4 sm:pt-6 pb-2 sm:pb-4 flex flex-col justify-center items-start">
             <div className="flex justify-center items-center">
                 <div className="text-midnight text-base sm:text-lg font-bold leading-normal">{title}</div>

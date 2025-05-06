@@ -232,7 +232,7 @@ function EditTable() {
 
     return (
         <>
-            <div className="bg-green-500 outline-2 outline-green-300 text-midnight rounded-2xl">
+            <div className="bg-green-500 outline-2 outline-green-300 text-midnight rounded-2xl xl:min-w-[1275px] max-w-[800px]">
                 <div className="h-fit w-full flex justify-start">
                     <div className="w-full h-fit px-table-1 pt-table-1 pb-table-2 font-bold text-lg leading-normal">
                         <div className="flex justify-between items-center text-3xl">
@@ -255,44 +255,38 @@ function EditTable() {
                     <>
                         <div className="flex w-full flex-col px-table-1 pb-table-1 overflow-clip">
                             {/* Table header with sortable columns */}
-                            <div className="grid grid-flow-row grid-cols-2 text-beige-100 gap-4 text-xl pb-table-2 font-bold border-b border-midnight">
+                            <div className="grid grid-flow-col text-beige-100 gap-4 text-xl pb-table-2 font-bold border-b border-midnight">
                                 <div className="flex justify-start items-center text-midnight">Sort by:</div>
-                                <div></div>
                                 <div
                                     className="flex justify-start items-center cursor-pointer hover:text-green-100"
                                     onClick={() => handleSort('buyDate')}
                                 >
                                     date buy {renderSortIcon('buyDate')}
                                 </div>
-                                <div></div>
                                 <div 
                                     className="flex justify-start items-center cursor-pointer hover:text-green-100"
                                     onClick={() => handleSort('buyPrice')}
                                 >
                                     price buy {renderSortIcon('buyPrice')}
                                 </div>
-                                <div></div>
                                 <div 
                                     className="flex justify-start items-center cursor-pointer hover:text-green-100"
                                     onClick={() => handleSort('soldDate')}
                                 >
                                     date sold {renderSortIcon('soldDate')}
                                 </div>
-                                <div></div>
                                 <div 
                                     className="flex justify-start items-center cursor-pointer hover:text-green-100"
                                     onClick={() => handleSort('soldPrice')}
                                 >
                                     price sold {renderSortIcon('soldPrice')}
                                 </div>
-                                <div></div>
                                 <div 
                                     className="flex justify-start items-center cursor-pointer hover:text-green-100"
                                     onClick={() => handleSort('profit')}
                                 >
                                     profit {renderSortIcon('profit')}
                                 </div>
-                                <div></div>
                             </div>
                             
                             {/* Table content */}
@@ -318,11 +312,15 @@ function EditTable() {
                                     <div className="flex justify-start items-center">date sold</div><div className="text-beige-100">{item.soldDate ? ( new Date(item.soldDate).toLocaleDateString('en-GB')): 'not sold'}</div>
                                     <div className="flex justify-start items-center">price sold</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{item.soldPrice !== null ? item.soldPrice: 'not sold'}</div>
                                     <div className="flex justify-start items-center">profit</div><div className={`text-beige-100 ${ item.soldPrice !== null ? "font-display2": ""}`}>{ item.soldPrice !== null ? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): "not sold"}</div>
-                                    <div className="flex items-center justify-center bg-midnight rounded-2xl mr-3 my-3 cursor-pointer" onClick={() => openEditModal(item)}>
-                                        <div className="py-3 px-3 text-beige-100">Edit</div>
+                                    <div className="flex justify-center">
+                                        <div className="flex xl:w-[400px] w-full items-center justify-center bg-midnight rounded-2xl mr-3 my-3 cursor-pointer" onClick={() => openEditModal(item)}>
+                                            <div className="py-3 px-3 text-beige-100">Edit</div>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center justify-center bg-midnight rounded-2xl ml-3 my-3 cursor-pointer" onClick={() => handleDelete(item._id)}>
-                                        <div className="py-3 px-3 text-red">Delete</div>
+                                    <div className="flex justify-center">
+                                        <div className="flex xl:w-[400px] w-full items-center justify-center bg-midnight rounded-2xl ml-3 my-3 cursor-pointer" onClick={() => handleDelete(item._id)}>
+                                            <div className="py-3 px-3 text-red">Delete</div>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -460,8 +458,11 @@ function EditTable() {
                         </div>
                     </div>
                     <div className="col-span-2 flex flex-row justify-center items-center mb-5 gap-5 sm:mx-20">
-                        <ButtonConfirm onClick={handleSave}>Update</ButtonConfirm>
-                        <button onClick={closeModal} className="flex items-center justify-center outline-2 outline-green-500 bg-midnight h-12 text-beige-200 rounded-lg text-3xl cursor-pointer w-[60%]">
+                        <ButtonConfirm
+                        onClick={handleSave}
+                        className={`max-w-[285px]`}
+                        >Update</ButtonConfirm>
+                        <button onClick={closeModal} className="flex items-center justify-center outline-2 outline-green-500 bg-midnight h-12 text-beige-200 rounded-lg text-3xl cursor-pointer w-[60%] max-w-[180px]">
                             <FiX />
                         </button>
                     </div>

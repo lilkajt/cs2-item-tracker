@@ -217,7 +217,7 @@ function Dashboard() {
       </div>
       { stats ? (
         <>
-          <div className='flex justify-center flex-row flex-wrap gap-4.5'>
+          <div className='flex flex-row flex-wrap gap-4.5 xl:justify-between max-w-[1275px] xl:w-full justify-center'>
             <Card
               icon='dollar'
               title='Total Revenue'
@@ -243,11 +243,11 @@ function Dashboard() {
               subtitle='Purchased current month'
             />
           </div>
-          <div className='w-full flex flex-col gap-5 items-center'>
+          <div className='flex flex-row flex-wrap gap-5 justify-center'>
             <BarChart data={stats?.yearlyData || {}} title="Monthly Profit/Loss"></BarChart>
             <Table items={recentSales} title="Recent sales"></Table>
           </div>
-          <div className='w-full'>
+          <div className='flex'>
             <EditTable/>
           </div>
         </>
@@ -345,8 +345,11 @@ function Dashboard() {
           </div>
         </div>
         <div className="col-span-2 flex flex-row justify-center items-center mb-5 gap-5 sm:mx-20">
-          <ButtonConfirm onClick={handleSave}>Add</ButtonConfirm>
-          <button onClick={closeModal} className="flex items-center justify-center outline-2 outline-green-500 bg-midnight h-12 text-beige-200 rounded-lg text-3xl cursor-pointer w-[60%]">
+          <ButtonConfirm
+          onClick={handleSave}
+          className='max-w-[285px]'
+          >Add</ButtonConfirm>
+          <button onClick={closeModal} className="flex items-center justify-center outline-2 outline-green-500 bg-midnight h-12 text-beige-200 rounded-lg text-3xl cursor-pointer w-[60%] max-w-[180px]">
             <FiX />
           </button>
         </div>

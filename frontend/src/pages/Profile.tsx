@@ -152,7 +152,7 @@ function Profile() {
           <div className='w-72'>
             <span className='block text-sm font-medium text-beige-100 h-8'>Your email</span>
             <div className="flex items-center h-10 text-beige-200 font-normal cursor-not-allowed bg-green-500 text-lg px-3 py-2 outline-2 outline-green-300 rounded-lg select-none">
-              <span className='leading-3.5'>
+              <span className='leading-3.5 text-3xl md:text-2xl'>
               {isLoggedIn ? user?.email: ""}
               </span>
             </div>
@@ -160,7 +160,7 @@ function Profile() {
           <div className='w-72'>
             <span className='block text-sm font-medium text-beige-100 h-8'>Your login</span>
             <div className="flex items-center h-10 text-beige-200 font-normal cursor-not-allowed bg-green-500 text-lg px-3 py-2 outline-2 outline-green-300 rounded-lg select-none">
-              <span className='leading-3.5'>
+              <span className='leading-3.5 text-3xl md:text-2xl'>
               {isLoggedIn ? user?.username: ""}
               </span>
             </div>
