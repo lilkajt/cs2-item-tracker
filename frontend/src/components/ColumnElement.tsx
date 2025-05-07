@@ -1,5 +1,3 @@
-import React from 'react'
-
 function ColumnElement() {
   return (
     <div>ColumnElement</div>
