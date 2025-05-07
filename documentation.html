@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 item tracker - Dokumentacja Techniczna</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CS2 item tracker - Dokumentacja Techniczna</h1>
+
+        <section>
+            <h2>Opis projektu</h2>
+            <p>CS2 Item Tracker to aplikacja webowa stworzona w celu zarządzania przedmiotami. Umożliwia użytkownikom śledzenie zakupionych i sprzedanych przedmiotów, zarządzanie ich historią oraz analizowanie zysków i strat.</p><p>Aplikacja oferuje funkcjonalności takie jak dodawanie przedmiotów, edytowanie ich szczegółów, usuwanie oraz przeglądanie statystyk dotyczących transakcji. Dzięki responsywnemu interfejsowi użytkownika, aplikacja działa płynnie na różnych urządzeniach.</p>
+        </section>
+
+        <section>
+            <h2>Autorzy projektu</h2>
+            <ul>
+                <li>Dawid Rubacha</li>
+                <li>Kajetan Szlenzak</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Specyfikacja technologii</h2>
+            <ul>
+                <li><strong>Frontend</strong>: React 19.0, TypeScript, TailwindCSS 4.1, Zustand 5.0, Recharts</li>
+                <li><strong>Backend</strong>: Node.js, Express, Mongoose</li>
+                <li><strong>Baza danych</strong>: MongoDB</li>
+                <li><strong>Inne</strong>: ESLint, Vite, Axios</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Instrukcje pierwszego uruchomienia projektu</h2>
+            <ol>
+                tutaj opisac jak zbudowac projekt i uruchomic go z dokcera lub za pomoca jednej komendy (tak robilem wczesniej)
+            </ol>
+            <ol>
+                <li>Pobierz i zainstaluj <a href="https://visualstudio.microsoft.com/pl/vs/community/" target="_blank" rel="noopener noreferrer">Visual studio 2022</a>. Instalujemy opcje ASP.NET i tworzenia aplikacji internetowych.</li>
+                <li>Pobierz i zainstaluj <a href="https://dotnet.microsoft.com/en-us/download" target="_blank" rel="noopener noreferrer">.NET w wersji 8.0</a>.</li>
+                <li>Pobierz i zainstaluj <a href="https://nodejs.org/en/download/current" target="_blank" rel="noopener noreferrer">Node.js wersja 20+</a>.</li>
+                <li>Pobierz i zainstaluj <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version" target="_blank" rel="noopener noreferrer">Visual studio 2019 Redistributable Version</a>.</li>
+                <li>Pobierz i zainstaluj <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noopener noreferrer">Mysql server</a>. Podczas instalacji ustawić domyślne hasło 'root'.</li>
+                <li>Zainstaluj <a href="https://learn.microsoft.com/pl-pl/ef/core/cli/dotnet#installing-the-tools" target="_blank" rel="noopener noreferrer">dotnet ef</a> wykonując polecenie w wierszu poleceń:
+                    <pre><code>dotnet tool install --global dotnet-ef</code></pre>
+                </li>
+                <li><a href="https://github.com/lilkajt/techwatchers" target="_blank" rel="noopener noreferrer">Sklonuj repozytorium projektu.</a></li>
+                <li>Przejdź do katalogu <code>techwatchers.client</code> i uruchom polecenie z uprawnieniami administratora:
+                    <pre><code>npm i --force</code></pre>
+                </li>
+                <li>Przejdź do katalogu <code>Techwatchers.Server</code> i uruchom polecenie z uprawnieniami administratora:
+                    <pre><code>dotnet ef database update</code></pre>
+                </li>
+                <li>Przejdź z powrotem do katalogu <code>Techwatchers.Server</code> i uruchom backend oraz frontend jednocześnie:
+                    <pre><code>dotnet run</code></pre>
+                </li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Struktura projektu</h2>
+            <pre><code>
+                cs2-item-tracker/
+                ├── backend/
+                │   ├── config/
+                │   ├── controllers/
+                │   ├── models/
+                │   ├── routes/
+                │   ├── utils/
+                │   └── server.js
+                ├── frontend/
+                │   ├── src/
+                │   │   ├── assets/
+                │   │   ├── components/
+                │   │   │   └── ui/
+                │   │   ├── lib/
+                │   │   ├── pages/
+                │   │   ├── store/
+                │   │   ├── utils/
+                │   │   ├── App.tsx
+                │   │   ├── main.tsx
+                │   │   └── index.css
+                │   ├── public/
+                │   │   └── fonts/
+                │   ├── .gitignore
+                │   ├── index.html
+                │   ├── eslint.config.json
+                │   ├── components.json
+                │   ├── tsconfig.json
+                │   ├── tsconfig.json
+                │   ├── tsconfig.app.json
+                │   ├── tsconfig.node.json
+                │   ├── vite.config.ts
+                │   ├── README.md
+                │   └── package.json
+                ├── .env
+                ├── .gitignore
+                ├── LICENSE
+                ├── package.json
+                └── README.md
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>Modele</h2>
+            
+            <h3>User</h3>
+            <p>Model użytkownika przechowuje informacje o zarejestrowanych użytkownikach.</p>
+            <ul>
+                <li><strong>id</strong>: ObjectId - unikalny identyfikator użytkownika</li>
+                <li><strong>username</strong>: string - nazwa użytkownika (unikalna, wymagana)</li>
+                <li><strong>email</strong>: string - adres email użytkownika (unikalny, wymagany)</li>
+                <li><strong>password</strong>: string - hasło użytkownika (wymagane)</li>
+                <li><strong>status</strong>: string - status użytkownika (domyślnie "inactive")</li>
+                <li><strong>timestamps</strong>: Date - automatyczne znaczniki czasu utworzenia i aktualizacji</li>
+            </ul>
+            
+            <h3>Item</h3>
+            <p>Model przedmiotu przechowuje informacje o przedmiotach dodanych przez użytkowników.</p>
+            <ul>
+                <li><strong>id</strong>: ObjectId - unikalny identyfikator przedmiotu</li>
+                <li><strong>userId</strong>: ObjectId - identyfikator użytkownika, który dodał przedmiot (referencja do User)</li>
+                <li><strong>itemName</strong>: string - nazwa przedmiotu (wymagana)</li>
+                <li><strong>buyPrice</strong>: number - cena zakupu przedmiotu (wymagana)</li>
+                <li><strong>buyDate</strong>: number - data zakupu przedmiotu (wymagana, timestamp)</li>
+                <li><strong>soldPrice</strong>: number - cena sprzedaży przedmiotu (opcjonalna)</li>
+                <li><strong>soldDate</strong>: number - data sprzedaży przedmiotu (opcjonalna, timestamp)</li>
+                <li><strong>isDeleted</strong>: boolean - status usunięcia przedmiotu (domyślnie false)</li>
+                <li><strong>deletedAt</strong>: number - data usunięcia przedmiotu (opcjonalna, timestamp)</li>
+                <li><strong>imageUrl</strong>: string - URL obrazu przedmiotu (opcjonalny)</li>
+                <li><strong>timestamps</strong>: Date - automatyczne znaczniki czasu utworzenia i aktualizacji</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Kontrolery</h2>
+        
+            <h3>Auth Controller</h3>
+            <ul>
+                <li><strong>Signup</strong>: POST <code>/api/auth/signup</code></li>
+                <li><strong>Parametry</strong>: username, email, password, confirmPass</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi rejestrację w systemie.</li>
+                <li><strong>Zwracane dane</strong>: Informacja o powodzeniu rejestracji</li>
+            </ul>
+            <ul>
+                <li><strong>Signin</strong>: POST <code>/api/auth/signin</code></li>
+                <li><strong>Parametry</strong>: login, password</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi zalogowanie się do systemu.</li>
+                <li><strong>Zwracane dane</strong>: Token autoryzacyjny oraz dane użytkownika</li>
+            </ul>
+            <ul>
+                <li><strong>Logout</strong>: GET <code>/api/auth/logout</code></li>
+                <li><strong>Parametry</strong>: Brak</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi wylogowanie się z systemu.</li>
+                <li><strong>Zwracane dane</strong>: Informacja o powodzeniu operacji</li>
+            </ul>
+            <ul>
+                <li><strong>Verify</strong>: GET <code>/api/auth/verify</code></li>
+                <li><strong>Parametry</strong>: Brak</li>
+                <li><strong>Opis</strong>: Weryfikuje status uzytkownika.</li>
+                <li><strong>Zwracane dane</strong>: Informacja o powodzeniu operacji</li>
+            </ul>
+        
+            <h3>Listing Controller</h3>
+            <ul>
+                <li><strong>CreateItem</strong>: POST <code>/api/items/create</code></li>
+                <li><strong>Parametry</strong>: itemName, buyPrice, buyDate, soldPrice, soldDate, imageUrl</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi dodanie nowego przedmiotu.</li>
+                <li><strong>Zwracane dane</strong>: Informacje o dodanym przedmiocie</li>
+            </ul>
+            <ul>
+                <li><strong>GetItems</strong>: GET <code>/api/items</code></li>
+                <li><strong>Parametry</strong>: page, limit</li>
+                <li><strong>Opis</strong>: Zwraca listę przedmiotów użytkownika z paginacją.</li>
+                <li><strong>Zwracane dane</strong>: Lista przedmiotów oraz informacje o paginacji</li>
+            </ul>
+            <ul>
+                <li><strong>GetItem</strong>: GET <code>/api/items/{id}</code></li>
+                <li><strong>Parametry</strong>: Brak</li>
+                <li><strong>Opis</strong>: Zwraca przedmiot o wybranym id.</li>
+                <li><strong>Zwracane dane</strong>: Przedmiot</li>
+            </ul>
+            <ul>
+                <li><strong>GetAllItems</strong>: GET <code>/api/items/all</code></li>
+                <li><strong>Parametry</strong>: Brak</li>
+                <li><strong>Opis</strong>: Zwraca listę wszystkich przedmiotów.</li>
+                <li><strong>Zwracane dane</strong>: Lista wszystkich przedmiotów</li>
+            </ul>
+            <ul>
+                <li><strong>GetItemStats</strong>: GET <code>/api/items/stats</code></li>
+                <li><strong>Parametry</strong>: Brak</li>
+                <li><strong>Opis</strong>: Zwraca statystyki dotyczące przedmiotów użytkownika.</li>
+                <li><strong>Zwracane dane</strong>: Statystyki, takie jak średni ROI, średnie ceny zakupu i sprzedaży</li>
+            </ul>
+            <ul>
+                <li><strong>UpdateItem</strong>: PUT <code>/api/items/update/{id}</code></li>
+                <li><strong>Parametry</strong>: itemName, buyPrice, buyDate, soldPrice, soldDate, imageUrl</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi aktualizację szczegółów przedmiotu.</li>
+                <li><strong>Zwracane dane</strong>: Informacje o zaktualizowanym przedmiocie</li>
+            </ul>
+            <ul>
+                <li><strong>DeleteItem</strong>: DELETE <code>/api/items/delete/{id}</code></li>
+                <li><strong>Parametry</strong>: Brak</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi usunięcie przedmiotu.</li>
+                <li><strong>Zwracane dane</strong>: Informacja o powodzeniu operacji</li>
+            </ul>
+        
+            <h3>UserController</h3>
+            <ul>
+                <li><strong>UpdatePassword</strong>: POST <code>/api/user/update/{id}</code></li>
+                <li><strong>Parametry</strong>: curPassword, newPassword, confNewPassword</li>
+                <li><strong>Opis</strong>: Umożliwia użytkownikowi aktualizację hasła.</li>
+                <li><strong>Zwracane dane</strong>: Informacja o powodzeniu operacji</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>System użytkowników</h2>
+            <p>W systemie funkcjonują dwie role użytkowników: gość i zalogowany użytkownik.</p>
+            <ul>
+                <li><strong>Gość</strong>: Może jedynie przeglądać strone główna, logowanie oraz rejestrację.</li>
+                <li><strong>Zalogowany użytkownik</strong>: Może dodawać, aktualizować i usuwać swoje przedmioty oraz aktualizować swoje hasło.</li>
+            </ul>
+        
+            <h3>Nadawanie ról użytkownikom</h3>
+            <p>Role użytkownikom są nadawane automatycznie podczas rejestracji. Każdy nowy użytkownik staje się zalogowanym użytkownikiem.</p>
+        
+            <h3>Możliwości użytkowników</h3>
+            <ul>
+                <li><strong>Gość</strong>: Przeglądanie strony głównej, mozliwosc logowania i rejestracji.</li>
+                <li><strong>Zalogowany użytkownik</strong>: Dodawanie, edytowanie, usuwanie przedmiotów oraz aktualizowanie swojego hasła.</li>
+            </ul>
+        
+            <h3>Informacje powiązane z użytkownikiem</h3>
+            <ul>
+                <li>Dodane przedmioty</li>
+                <li>Profil użytkownika</li>
+                <li>Statystyki użytkownika (np. średni ROI, średnie ceny zakupu i sprzedaży)</li>
+                <li>Historia transakcji</li>
+            </ul>
+        
+            <h3>Informacje globalne</h3>
+            <ul>
+                <li>Brak</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Najciekawsze funkcjonalności</h2>
+            <ul>
+                <li><strong>Zaawansowana walidacja formularzy</strong>: Formularze rejestracji, logowania i aktualizacji hasła posiadają zaawansowaną walidację, która sprawdza poprawność danych wprowadzanych przez użytkowników.</li>
+                <li><strong>Responsywny interfejs użytkownika</strong>: Aplikacja jest w pełni responsywna, co oznacza, że działa poprawnie na różnych urządzeniach, w tym na komputerach, tabletach i smartfonach.</li>
+                <li><strong>Bezpieczne hashowanie haseł</strong>: Hasła użytkowników są hashowane przy użyciu bezpiecznych algorytmów, co zapewnia wysoki poziom bezpieczeństwa danych użytkowników.</li>
+                <li><strong>Statystyki użytkownika</strong>: Użytkownicy mogą przeglądać szczegółowe statystyki dotyczące swoich przedmiotów, takie jak średni ROI, średnie ceny zakupu i sprzedaży.</li>
+                <li><strong>Dynamiczne ładowanie danych</strong>: Dane są ładowane dynamicznie z serwera, co pozwala na bieżąco aktualizować listę przedmiotów i statystyki bez konieczności odświeżania strony.</li>
+                <li><strong>Filtrowanie i sortowanie przedmiotów</strong>: Użytkownicy mogą filtrować i sortować swoje przedmioty według różnych kryteriów, takich jak data zakupu czy cena.</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
