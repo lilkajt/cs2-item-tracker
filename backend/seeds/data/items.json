@@ -1,0 +1,170 @@
+[
+    {
+        "itemName": "AK-47 | Vulcan (Field-Tested)",
+        "buyPrice": 342.49,
+        "buyDate": 1736291014000,
+        "soldPrice": 346.23,
+        "soldDate": 1736895814000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Huntsman Knife | Tiger Tooth (Factory New)",
+        "buyPrice": 396.33,
+        "buyDate": 1736422374000,
+        "soldPrice": 404,
+        "soldDate": 1737027174000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "Souvenir Desert Eagle | Fennec Fox (Minimal Wear)",
+        "buyPrice": 347.66,
+        "buyDate": 1736288123000,
+        "soldPrice": 355,
+        "soldDate": 1736892923000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "USP-S | Target Acquired (Factory New)",
+        "buyPrice": 269.1,
+        "buyDate": 1735638815000,
+        "soldPrice": 272,
+        "soldDate": 1736243615000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Bowie Knife | Lore (Field-Tested)",
+        "buyPrice": 261.04,
+        "buyDate": 1737372415000,
+        "soldPrice": 278.94,
+        "soldDate": 1737977215000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Flip Knife | Night (Field-Tested)",
+        "buyPrice": 278,
+        "buyDate": 1737371253000,
+        "soldPrice": 288,
+        "soldDate": 1737976053000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Shadow Daggers | Doppler (Factory New) - Phase 3",
+        "buyPrice": 298.49,
+        "buyDate": 1737372440000,
+        "soldPrice": 318,
+        "soldDate": 1737977240000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Navaja Knife",
+        "buyPrice": 209.21,
+        "buyDate": 1737372440000,
+        "soldPrice": 210.38,
+        "soldDate": 1737977240000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Talon Knife | Boreal Forest (Battle-Scarred)",
+        "buyPrice": 390.56,
+        "buyDate": 1738178128000,
+        "soldPrice": 405,
+        "soldDate": 1738782928000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Falchion Knife | Tiger Tooth (Factory New)",
+        "buyPrice": 339.77,
+        "buyDate": 1738174974000,
+        "soldPrice": 355.69,
+        "soldDate": 1738779774000,
+        "imageUrl": ""
+    },
+    {
+        "itemName": "★ Bayonet | Bright Water (Field-Tested)",
+        "buyPrice": 376.39,
+        "buyDate": 1738324607000,
+        "soldPrice": 389,
+        "soldDate": 1738929407000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Bayonet | Lore (Field-Tested)",
+        "buyPrice": 657.52,
+        "buyDate": 1739022692000,
+        "soldPrice": 680,
+        "soldDate": 1739627492000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Falchion Knife | Tiger Tooth (Factory New)",
+        "buyPrice": 356.03,
+        "buyDate": 1739027147000,
+        "soldPrice": 369,
+        "soldDate": 1739631947000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "AK-47 | B the Monster (Field-Tested)",
+        "buyPrice": 436.92,
+        "buyDate": 1739029128000,
+        "soldPrice": 438.35,
+        "soldDate": 1739633928000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Huntsman Knife | Tiger Tooth (Factory New)",
+        "buyPrice": 425.1,
+        "buyDate": 1739901689000,
+        "soldPrice": 449,
+        "soldDate": 1740506489000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Ursus Knife | Marble Fade (Factory New)",
+        "buyPrice": 537.53,
+        "buyDate": 1739903498000,
+        "soldPrice": 559,
+        "soldDate": 1740508298000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Kukri Knife | Stained (Field-Tested)",
+        "buyPrice": 301.3,
+        "buyDate": 1739901609000,
+        "soldPrice": 313.03,
+        "soldDate": 1740506409000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Bayonet | Forest DDPAT (Field-Tested)",
+        "buyPrice": 312.12,
+        "buyDate": 1740596820000,
+        "soldPrice": 325,
+        "soldDate": 1741201620000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Huntsman Knife | Lore (Field-Tested)",
+        "buyPrice": 289.01,
+        "buyDate": 1740599558000,
+        "soldPrice": 315.01,
+        "soldDate": 1741204358000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Ursus Knife | Tiger Tooth (Factory New)",
+        "buyPrice": 456.57,
+        "buyDate": 1740657958000,
+        "soldPrice": 477.02,
+        "soldDate": 1741262758000,
+        "imageUrl": ""
+        },
+        {
+        "itemName": "★ Stiletto Knife | Ultraviolet (Field-Tested)",
+        "buyPrice": 483.45,
+        "buyDate": 1740591574000,
+        "soldPrice": 500.72,
+        "soldDate": 1741196374000,
+        "imageUrl": ""
+        }
+]
