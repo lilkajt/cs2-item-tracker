@@ -12,7 +12,7 @@
 
         <section>
             <h2>Opis projektu</h2>
-            <p>CS2 Item Tracker to aplikacja webowa stworzona w celu zarządzania przedmiotami. Umożliwia użytkownikom śledzenie zakupionych i sprzedanych przedmiotów, zarządzanie ich historią oraz analizowanie zysków i strat.</p><p>Aplikacja oferuje funkcjonalności takie jak dodawanie przedmiotów, edytowanie ich szczegółów, usuwanie oraz przeglądanie statystyk dotyczących transakcji. Dzięki responsywnemu interfejsowi użytkownika, aplikacja działa płynnie na różnych urządzeniach.</p>
+            <p>CS2 Item Tracker to aplikacja webowa stworzona w celu zarządzania przedmiotami. Umożliwia użytkownikom śledzenie zakupionych i sprzedanych przedmiotów, zarządzanie ich historią oraz analizowanie zysków i strat.<br>Aplikacja oferuje funkcjonalności takie jak dodawanie przedmiotów, edytowanie ich szczegółów, usuwanie oraz przeglądanie statystyk dotyczących transakcji. Dzięki responsywnemu interfejsowi użytkownika, aplikacja działa płynnie na różnych urządzeniach.</p>
         </section>
 
         <section>
@@ -27,7 +27,7 @@
             <h2>Specyfikacja technologii</h2>
             <ul>
                 <li><strong>Frontend</strong>: React 19.0, TypeScript, TailwindCSS 4.1, Zustand 5.0, Recharts</li>
-                <li><strong>Backend</strong>: Node.js, Express, Mongoose</li>
+                <li><strong>Backend</strong>: Node.js, Express 5.1, bcrypt, Mongoose</li>
                 <li><strong>Baza danych</strong>: MongoDB</li>
                 <li><strong>Inne</strong>: ESLint, Vite, Axios</li>
             </ul>
@@ -36,26 +36,41 @@
         <section>
             <h2>Instrukcje pierwszego uruchomienia projektu</h2>
             <ol>
-                tutaj opisac jak zbudowac projekt i uruchomic go z dokcera lub za pomoca jednej komendy (tak robilem wczesniej)
-            </ol>
-            <ol>
-                <li>Pobierz i zainstaluj <a href="https://visualstudio.microsoft.com/pl/vs/community/" target="_blank" rel="noopener noreferrer">Visual studio 2022</a>. Instalujemy opcje ASP.NET i tworzenia aplikacji internetowych.</li>
-                <li>Pobierz i zainstaluj <a href="https://dotnet.microsoft.com/en-us/download" target="_blank" rel="noopener noreferrer">.NET w wersji 8.0</a>.</li>
-                <li>Pobierz i zainstaluj <a href="https://nodejs.org/en/download/current" target="_blank" rel="noopener noreferrer">Node.js wersja 20+</a>.</li>
-                <li>Pobierz i zainstaluj <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version" target="_blank" rel="noopener noreferrer">Visual studio 2019 Redistributable Version</a>.</li>
-                <li>Pobierz i zainstaluj <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noopener noreferrer">Mysql server</a>. Podczas instalacji ustawić domyślne hasło 'root'.</li>
-                <li>Zainstaluj <a href="https://learn.microsoft.com/pl-pl/ef/core/cli/dotnet#installing-the-tools" target="_blank" rel="noopener noreferrer">dotnet ef</a> wykonując polecenie w wierszu poleceń:
-                    <pre><code>dotnet tool install --global dotnet-ef</code></pre>
+                <li><a href="https://github.com/lilkajt/cs2-item-tracker" target="_blank" rel="noopener noreferrer">Sklonuj repozytorium projektu.</a></li>
+                <li>Pobierz i zainstaluj <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">Node js v22</a>.</li>
+                <li>Pobierz i zainstaluj <a href="https://www.mongodb.com/try/download/community" target="_blank" rel="noopener noreferrer">MongoDB community edition wraz z kompasem</a>.
+                    <p>Po sukcesywnym zainstalowaniu kompasu, nalezy skopiowac tekst z pola URI(connection string)</p>
+                    <p>Przykład: <code>mongodb://localhost:27017/</code></p>
                 </li>
-                <li><a href="https://github.com/lilkajt/techwatchers" target="_blank" rel="noopener noreferrer">Sklonuj repozytorium projektu.</a></li>
-                <li>Przejdź do katalogu <code>techwatchers.client</code> i uruchom polecenie z uprawnieniami administratora:
-                    <pre><code>npm i --force</code></pre>
+                <li>Przejdź do katalogu <code>cs2-item-tracker</code> i stworz plik <code>.env</code> do niego wpisz nastepujące zmienne oraz zapisz plik.
+                    <pre><code>MONGO_URI=naszURI/nazwa bazy jaka chcemy # przyklad: mongodb://localhost:27017/cs2-item-tracker<br>JWT_SECRET=sekretnaWiadomosc</code></pre>
                 </li>
-                <li>Przejdź do katalogu <code>Techwatchers.Server</code> i uruchom polecenie z uprawnieniami administratora:
-                    <pre><code>dotnet ef database update</code></pre>
+                <li>Zainstaluj biblioteczki oraz zbuduj frontend. Otwórz folder <code>cs2-item-tracker</code> w terminalu/IDE i wpisz nastepujące polecenie:
+                    <pre><code>npm run build</code></pre>
                 </li>
-                <li>Przejdź z powrotem do katalogu <code>Techwatchers.Server</code> i uruchom backend oraz frontend jednocześnie:
-                    <pre><code>dotnet run</code></pre>
+                <li>Uruchom backend oraz frontend jednocześnie:
+                    <pre><code>npm run start</code></pre>
+                </li>
+                <li>Jeśli chcesz seed'owac baze danych(przykladowe dane) to wpisz w terminal:
+                    <pre><code>npm run seed</code></pre>
+                    <br>
+                    <div
+                    style="display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    grid-template-rows: repeat(4, 1fr);
+                    grid-column-gap: 0px;
+                    grid-row-gap: 0px;"
+                    >
+                        <div class="">Uzytkownik z przedmiotami:</div>
+                        <div class="">Uzytkownik bez przedmiotow:</div>
+                        <div class="">itemuser</div>
+                        <div class="">demouser</div>
+                        <div class="">items@example.com</div>
+                        <div class="">demo@example.com</div>
+                        <div class="">Password456!</div>
+                        <div class="">Password123!</div>
+                    </div>
+                    <p>Jesli nie chcesz seed'owac mozesz usnąć folder <code>backend/seeds</code></p>
                 </li>
             </ol>
         </section>
@@ -69,6 +84,8 @@
                 │   ├── controllers/
                 │   ├── models/
                 │   ├── routes/
+                │   ├── seeds/
+                │   │   └── data/
                 │   ├── utils/
                 │   └── server.js
                 ├── frontend/

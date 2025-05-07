@@ -34,6 +34,7 @@ pre {
 
 code {
     font-family: "Courier New", Courier, monospace;
+    line-height: 1.6;
     background-color: #f4f4f4;
     padding: 2px 4px;
     border-radius: 4px;
