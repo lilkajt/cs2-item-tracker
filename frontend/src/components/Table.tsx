@@ -69,7 +69,7 @@ function Table({ items, title = "Recent Sales" }: TableProps) {
                             </div>
                             <div className="col-span-2 text-right">
                                 <div className="text-beige-100 text-lg font-bold font-display2 leading-tight tracking-tight text-center">
-                                    { item.soldPrice? (item.soldPrice - item.buyPrice > 0 ? `+${round10(item.soldPrice - item.buyPrice,-2)}`: round10(item.soldPrice - item.buyPrice,-2)): round10(0 - item.buyPrice,-2)}c
+                                    { item.soldPrice? (item.soldPrice - item.buyPrice > 0 ? `+${(item.soldPrice - item.buyPrice).toFixed(2)}`: (item.soldPrice - item.buyPrice).toFixed(2)): (0 - item.buyPrice).toFixed(2)}c
                                 </div>
                             </div>
                         </div>
