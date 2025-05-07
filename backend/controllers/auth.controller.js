@@ -64,7 +64,7 @@ export const signin = async (req, res, next) => {
         })
         if (!user) return next(errorHandler(404,"Oops! We couldn't find an account with that email/username. Please check again or sign up to create a new account."));
         const isMatch = bcrypt.compareSync(trimPassword, user.password);
-        if (!isMatch) return next(errorHandler(401, "Incorrect email/username or password. Please try again or reset your password if you've forgotten it."));
+        if (!isMatch) return next(errorHandler(404, "Incorrect email/username or password. Please try again or reset your password if you've forgotten it."));
         const {password: p, ...rest} = user._doc;
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "3h"});
         res

@@ -21,7 +21,7 @@ export const updateUser = async (req, res, next) => {
         if (!user) return next(errorHandler(404, "Oops! We couldn't find an account. Try to login again."));
         const isMatch = bcrypt.compareSync(trimCurPassword, user.password);
         if (!isMatch) {
-            return next(errorHandler(401, "Incorrect current password. Please try again or reset your password if you've forgotten it."));
+            return next(errorHandler(404, "Incorrect current password. Please try again or reset your password if you've forgotten it."));
         } else{
             const newHashedPassword = bcrypt.hashSync(trimNewPassword);
             user.password = newHashedPassword;
