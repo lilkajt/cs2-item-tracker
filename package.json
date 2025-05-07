@@ -4,7 +4,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon backend/server.js"
+    "build": "npm i && npm i --force --prefix frontend && npm audit fix --force --prefix frontend && npm run build --prefix frontend",
+    "start": "NODE_ENV=PRODUCTION node backend/server.js",
+    "dev": "NODE_ENV=development nodemon backend/server.js",
+    "dev:front": "NODE_ENV=development npm run dev --prefix frontend"
   },
   "repository": {
     "type": "git",
@@ -17,7 +20,7 @@
     "url": "https://github.com/lilkajt/cs2-item-tracker/issues"
   },
   "homepage": "https://github.com/lilkajt/cs2-item-tracker#readme",
-  "description": "",
+  "description": "CS2 Item Tracker Application",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
