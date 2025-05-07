@@ -1,4 +1,4 @@
-import useItemStore, { SortField, SortDirection } from "@/store/useItemStore";
+import useItemStore, { SortField } from "@/store/useItemStore";
 import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronsLeft, FiChevronRight, FiChevronsRight, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { Item } from "@/store/useItemStore";
@@ -41,6 +41,7 @@ function EditTable() {
         soldPrice: '',
         soldDate: ''
     });
+    type ErrorKey = keyof typeof errors;
 
 
     useEffect(() => {
@@ -111,7 +112,7 @@ function EditTable() {
             [name]: value
         }));
     
-        if (errors[name]) {
+        if (errors[name as ErrorKey]) {
             setErrors(prev => ({
                 ...prev,
                 [name]: ''

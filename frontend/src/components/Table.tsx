@@ -1,5 +1,4 @@
 import { FiImage } from "react-icons/fi";
-import { round10 } from "@/utils/decimalAdjust";
 import { Item } from "@/store/useItemStore";
 
 interface TableProps {

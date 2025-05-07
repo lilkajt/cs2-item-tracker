@@ -27,7 +27,7 @@ interface BarChartProps {
 function BarChart({ data = {}, title = 'Overview' }: BarChartProps) {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [activeIndex, setActiveIndex] = useState<number | null | undefined>(null);
+  const [, setActiveIndex] = useState<number | null | undefined>(null);
   const [disable, setDisable] = useState(false);
   const barColor = "#D9C9C5"; 
   
