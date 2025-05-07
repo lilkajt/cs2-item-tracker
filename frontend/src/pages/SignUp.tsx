@@ -25,6 +25,7 @@ function SignUp() {
     password: '',
     confirmPass: ''
   });
+  type ErrorKey = keyof typeof errors;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -72,7 +73,7 @@ function SignUp() {
       [name]: value
     }));
 
-    if (errors[name]){
+    if (errors[name as ErrorKey]){
       setErrors( prev => ({
         ...prev,
         [name]: ''

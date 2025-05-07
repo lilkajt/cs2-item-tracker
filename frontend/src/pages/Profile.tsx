@@ -27,6 +27,7 @@ function Profile() {
     confNewPassword: '',
     main: ''
   });
+  type ErrorKey = keyof typeof errors;
 
   const handleLogout = () => {
     logout();
@@ -49,7 +50,7 @@ function Profile() {
       [name]: value
     }));
 
-    if (errors[name]) {
+    if (errors[name as ErrorKey]) {
       setErrors( prev => ({
         ...prev,
         [name]: ''
@@ -100,6 +101,7 @@ function Profile() {
           setCountdown(5);
           const timer = setInterval(() => {
             setCountdown(prevCount => {
+              if (!prevCount) return null;
               if (prevCount === 1) {
                 clearInterval(timer);
                 handleCloseModal();

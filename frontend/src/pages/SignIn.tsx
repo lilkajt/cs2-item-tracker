@@ -20,6 +20,7 @@ function SignIn() {
     password: ''
   });
   const [authError, setAuthError] = useState('');
+  type ErrorKey = keyof typeof errors;
 
   const validateLoginCredential = (loginInput: string) => {
     if (!loginInput) return false;
@@ -38,7 +39,7 @@ function SignIn() {
       [name]: value
     }));
 
-    if (errors[name]) {
+    if (errors[name as ErrorKey]) {
       setErrors(prev => ({
         ...prev,
         [name]: ''
@@ -73,16 +74,17 @@ function SignIn() {
     e.preventDefault();
     setAuthError('');
     if (validateForm()){
-      try {
-        await loginWithCredentials(values.username, values.password);
+      await loginWithCredentials(values.username, values.password)
+      .then( () => {
         navigate('/dashboard');
-      } catch (error) {
+      })
+      .catch( (error) => {
         if (error.response && error.response.data){
           setAuthError(error.response.data.message || "Authentication failed");
         } else {
           setAuthError('Authentication failed. Please try again.');
         }
-      }
+      });
     }
   };
 

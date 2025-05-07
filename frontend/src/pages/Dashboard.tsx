@@ -30,6 +30,7 @@ function Dashboard() {
     soldDate: '',
     main: ''
   });
+  type ErrorKey = keyof typeof errors;
 
   const recentSales = useMemo(() => {
     const soldItems = allItems.filter(item => 
@@ -108,7 +109,7 @@ function Dashboard() {
       [name]: value
     }));
 
-    if (errors[name]) {
+    if (errors[name as ErrorKey]) {
       setErrors( prev => ({
         ...prev,
         [name]: ''
