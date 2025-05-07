@@ -185,7 +185,7 @@ const useItemStore = create<ItemState>((set, get) => ({
     }
   },
 
-  fetchItems: async (page = 1, limit = PAGE_SIZE) => {
+  fetchItems: async (page = 1) => {
     await get().fetchAllItems();
     get().setPage(page);
   },
