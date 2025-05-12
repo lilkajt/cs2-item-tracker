@@ -39,38 +39,38 @@
                 <li><a href="https://github.com/lilkajt/cs2-item-tracker" target="_blank" rel="noopener noreferrer">Sklonuj repozytorium projektu.</a></li>
                 <li>Pobierz i zainstaluj <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">Node js v22</a>.</li>
                 <li>Pobierz i zainstaluj <a href="https://www.mongodb.com/try/download/community" target="_blank" rel="noopener noreferrer">MongoDB community edition wraz z kompasem</a>.
-                    <p>Po sukcesywnym zainstalowaniu kompasu, nalezy skopiowac tekst z pola URI(connection string)</p>
-                    <p>Przykład: <code>mongodb://localhost:27017/</code></p>
                 </li>
-                <li>Przejdź do katalogu <code>cs2-item-tracker</code> i stworz plik <code>.env</code> do niego wpisz nastepujące zmienne oraz zapisz plik.
-                    <pre><code>MONGO_URI=naszURI/nazwa bazy jaka chcemy # przyklad: mongodb://localhost:27017/cs2-item-tracker<br>JWT_SECRET=sekretnaWiadomosc</code></pre>
+                <li>Uruchom MongoDB Compass i skopiuj connection string (URI), np.:
+                    <pre><code>mongodb://localhost:2137420/</code></pre>
                 </li>
-                <li>Zainstaluj biblioteczki oraz zbuduj frontend. Otwórz folder <code>cs2-item-tracker</code> w terminalu/IDE i wpisz nastepujące polecenie:
+                <li>Stwórz plik .env w katalogu cs2-item-tracker/:
+                    <pre><code>MONGO_URI=mongodb://localhost:2137420/cs2-item-tracker<br>JWT_SECRET=TwojTajnySekretJWT</code></pre>
+                </li>
+                <li>Zainstaluj zależności i zbuduj frontend:
                     <pre><code>npm run build</code></pre>
                 </li>
-                <li>Uruchom backend oraz frontend jednocześnie:
+                <li>Uruchom backend oraz frontend:
                     <pre><code>npm run start</code></pre>
                 </li>
-                <li>Jeśli chcesz seed'owac baze danych(przykladowe dane) to wpisz w terminal:
+                <li>Opcjonalnie: Seedowanie bazy danych (przykładowe dane):
                     <pre><code>npm run seed</code></pre>
                     <br>
-                    <div
-                    style="display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    grid-template-rows: repeat(4, 1fr);
-                    grid-column-gap: 0px;
-                    grid-row-gap: 0px;"
-                    >
-                        <div class="item">Uzytkownik z przedmiotami:</div>
-                        <div class="no">Uzytkownik bez przedmiotow:</div>
-                        <div class="item">itemuser</div>
-                        <div class="no">demouser</div>
-                        <div class="item">items@example.com</div>
-                        <div class="no">demo@example.com</div>
-                        <div class="item">Password456!</div>
-                        <div class="no">Password123!</div>
+                    <div class="parent">
+                        <div class="grid_item">Opis</div>
+                        <div class="grid_item">Login</div>
+                        <div class="grid_item">Email</div>
+                        <div class="grid_item">Hasło</div>
+                        <div class="grid_item">Uzytkownik z przedmiotami:</div>
+                        <div class="grid_item">itemuser</div>
+                        <div class="grid_item">items@example.com</div>
+                        <div class="grid_item">Password456!</div>
+                        <div class="grid_item">Uzytkownik bez przedmiotow:</div>
+                        <div class="grid_item">demouser</div>
+                        <div class="grid_item">demo@example.com</div>
+                        <div class="grid_item">Password123!</div>
                     </div>
-                    <p>Jesli nie chcesz seed'owac mozesz usnąć folder <code>backend/seeds</code></p>
+                    <br>
+                    <p>Jeśli nie chcesz seedować danych testowych, możesz usunąć katalog <code>backend/seeds</code></p>
                 </li>
             </ol>
         </section>
@@ -119,6 +119,8 @@
                 ├── package.json
                 └── README.md
             </code></pre>
+            <h3>Diagram ERD</h3>
+            <img src="2.png" alt="ERD" srcset="" style="width: 250px">
         </section>
 
         <section>
@@ -150,6 +152,8 @@
                 <li><strong>imageUrl</strong>: string - URL obrazu przedmiotu (opcjonalny)</li>
                 <li><strong>timestamps</strong>: Date - automatyczne znaczniki czasu utworzenia i aktualizacji</li>
             </ul>
+            <h3>Architektura systemu</h3>
+            <img src="1.png" alt="system architecture" srcset="" style="width: 250px; background-color: #111">
         </section>
 
         <section>
@@ -238,7 +242,7 @@
             <h2>System użytkowników</h2>
             <p>W systemie funkcjonują dwie role użytkowników: gość i zalogowany użytkownik.</p>
             <ul>
-                <li><strong>Gość</strong>: Może jedynie przeglądać strone główna, logowanie oraz rejestrację.</li>
+                <li><strong>Gość</strong>: Może przeglądać strone główna, logowanie oraz rejestrację.</li>
                 <li><strong>Zalogowany użytkownik</strong>: Może dodawać, aktualizować i usuwać swoje przedmioty oraz aktualizować swoje hasło.</li>
             </ul>
         
@@ -253,16 +257,13 @@
         
             <h3>Informacje powiązane z użytkownikiem</h3>
             <ul>
-                <li>Dodane przedmioty</li>
                 <li>Profil użytkownika</li>
+                <li>Dodane przedmioty</li>
                 <li>Statystyki użytkownika (np. średni ROI, średnie ceny zakupu i sprzedaży)</li>
-                <li>Historia transakcji</li>
+                <li>Historia przedmiotow</li>
             </ul>
-        
-            <h3>Informacje globalne</h3>
-            <ul>
-                <li>Brak</li>
-            </ul>
+            <h3>User flow</h3>
+            <img src="3.png" alt="user_flow" srcset="" style="background-color: #111">
         </section>
 
         <section>

@@ -39,3 +39,41 @@ code {
     padding: 2px 4px;
     border-radius: 4px;
 }
+
+.parent {
+    --gap: 1.5rem;
+    --line-offset: calc(var(--gap) / 2);
+    --line-thickness: 2px;
+    --line-color: #222;
+
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    grid-template-rows: repeat(3, auto);
+    gap: var(--gap);
+    overflow: hidden;
+}
+
+.grid_item {
+    position: relative;
+}
+
+.grid_item::before, 
+.grid_item::after {
+    content: '';
+    position: absolute;
+    background-color: var(--line-color);
+    z-index: 1;
+}
+
+.grid_item::after {
+    inline-size: 100vw;
+    block-size: var(--line-thickness);
+    inset-inline-start: 0;
+    inset-block-start: calc(var(--line-offset) * -1);
+}
+
+.grid_item::before {
+    inline-size: var(--line-thickness);
+    block-size: 100vh;
+    inset-inline-start: calc(var(--line-offset) * -1);
+}
