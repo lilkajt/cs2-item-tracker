@@ -44,7 +44,6 @@ function App() {
               <SignUp/>
             </AuthGuard>
           } />
-          <Route path='/about' element={<About/>} />
           <Route element={<PrivateRoute />} >
             <Route path='/dashboard' element={ <Dashboard />} />
             <Route path='/profile' element={ <Profile />} />
